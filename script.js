@@ -1,12 +1,3 @@
-   // Original by Hannah Dee
-        // modified by Edel Sherratt Nov. 2017 to use a namespace
-        // modified by Edel Sherratt October 2021 to provide more guidance for studying the code,
-        // and to use clearRect() to clear the canvas
-        // modified again by Edel Sherratt October 2022 to include touch as well as mouse/touchpad interaction, to improve some identifiers (e.g. canvas1 is now called collisions_canv) and to change how the game starts
-        // modified by Chris Loftus October 2024 to simplify the calculation for playerbox.x and playerbox.y. Original
-        // is commented out. Seems to work fine with simpler form. Also changed "var" to "let". Also made
-        // collision_game an arrow function, as an example of this syntactic sugar and called explicitly.
-
         const collision_game = function() { // use a function to hide the identifiers used in the collision game
 
             // a constructor for a box class 
