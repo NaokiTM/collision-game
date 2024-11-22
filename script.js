@@ -9,8 +9,8 @@
                 this.colour = colour;
                 this.draw = function (ctx) { // a method
                     ctx.save();
-                        ctx.fillStyle = this.colour;
-                        ctx.fillRect(this.x, this.y, this.width, this.height);
+                    ctx.fillStyle = this.colour;
+                    ctx.fillRect(this.x, this.y, this.width, this.height);
                     ctx.restore();
                 }
             }
@@ -26,62 +26,21 @@
             // let's have a red box to represent the player
             let playerbox = new Box(100,100,20,20,"#f00");
 
-            // let's add an event listener to the canvas - this will call the function
-            // seen_mouse_motion: whenever the mouse moves, we're going to use this to move the red box
-            canv.addEventListener("mousemove", seen_mouse_motion, false);
-            canv.addEventListener("touchstart",seen_touch_start, false);
-            canv.addEventListener("touchmove",seen_touch_motion, false);
-            // canv.addEventListener("touchend",seenend, false);
+            //(insert key event listeener here later)
 
-            function seen_mouse_motion(e) {
-                // if the mouse moves over the canvas
-                // this function will be called - we can then 
-                // update the red box's location on the canvas
-                // from the mouse_event 
-                // and the canvas bounding rectangle
-
-                let bounding_box = canv.getBoundingClientRect();
-                playerbox.x = (e.clientX - (bounding_box.left + (bounding_box.width - canv.width) / 2 ));
-                playerbox.y = (e.clientY - (bounding_box.top + (bounding_box.height - canv.height) / 2 ));
-                //playerbox.x = (e.clientX-bounding_box.left); *
-                                        //(canv.width/bounding_box.width);
-                //playerbox.y = (e.clientY-bounding_box.top); *
-                                        //(canv.height/bounding_box.height);
-            }
-
-            function seen_touch_start(e) {
-                e.preventDefault()
-            }
-            function seen_touch_motion(e) {
-                // if there is a touch movement over the canvas
-                // this function will be called - we can then 
-                // update the red box's location on the canvas
-                // from the touch event 
-                // and the canvas bounding rectangle
-
-                let bounding_box=canv.getBoundingClientRect();
-                playerbox.x=(e.targetTouches[e.targetTouches.length-1].clientX - (bounding_box.left + (bounding_box.width - canv.width) / 2 ));
-                playerbox.y=(e.targetTouches[e.targetTouches.length-1].clientY - (bounding_box.top + (bounding_box.height - canv.height) / 2 ));
-                //playerbox.x=(e.targetTouches[e.targetTouches.length-1].clientX-bounding_box.left);// *
-                                    //(canv.width/bounding_box.width);
-                //playerbox.y=(e.targetTouches[e.targetTouches.length-1].clientY-bounding_box.top);// *
-                                        //(canv.height/bounding_box.height);
-            }
 
             function game_loop() {
-                // this is called every 50ms and is basically a 
-                // frame-redraw-game-animation loop
 
-                // first thing to do each frame is clear the canvas
+                //clears the canvas to be redrawn later
                 ctx.clearRect(0, 0, canv.width, canv.height);
+                playerbox.draw(ctx); //(re)draw the player box
 
                 // This is where you could draw your obstacles and
                 // perhaps check for collisions
 
-                playerbox.draw(ctx); // (re)draw the player box
                 
                 // update the collisions count
-                document.getElementById("p1").innerHTML = collisions_count;
+                document.getElementById("p1").innerHTML = "Total collisions so far " + collisions_count;
             }
 
             function start_game() {
@@ -90,10 +49,9 @@
 
                 // set up an interval timer to call game_loop every 50 ms
                 // return the value of the interval timer so we can stop it later
-                return setInterval(game_loop, 50);
+                return setInterval(game_loop, 50);  //resets every 50ms
             }            
 
-            // probably have something to do when we're finished
             function stop_game() {
                 // add something here - like a game-over pop-up or something more interesting
                 clearInterval(game_id)
