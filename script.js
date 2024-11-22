@@ -26,7 +26,27 @@
             // let's have a red box to represent the player
             let playerbox = new Box(100,100,20,20,"#f00");
 
-            //(insert key event listeener here later)
+            //listens for keypresses
+            document.addEventListener('keydown', (event) => {
+                const moveInterval = 10;
+
+                //event.code ensures that the physical key is taken into account instead of the users programmed key settings
+
+                switch (event.code) {
+                    case 'ArrowUp': // Move up
+                        if (playerbox.y > 0) playerbox.y -= moveInterval;
+                        break;
+                    case 'ArrowDown': // Move down
+                        if (playerbox.y + playerbox.height < canv.height) playerbox.y += moveInterval;
+                        break;
+                    case 'ArrowLeft': // Move left
+                        if (playerbox.x > 0) playerbox.x -= moveInterval;
+                        break;
+                    case 'ArrowRight': // Move right
+                        if (playerbox.x + playerbox.width < canv.width) playerbox.x += moveInterval;
+                        break;
+                }
+            })
 
 
             function game_loop() {
