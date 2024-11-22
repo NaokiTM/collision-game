@@ -20,7 +20,7 @@
             let boxes = []; // array to hold the things we might collide with
 
             // let's set up a canvas and a canvas context so we can draw stuff
-            const canv = document.getElementById("collisions_canv");
+            const canv = document.getElementById("game_canvas");
             const ctx = canv.getContext("2d");
 
             // let's have a red box to represent the player
@@ -47,6 +47,11 @@
                         break;
                 }
             })
+
+            //called when the playerbox collides into an obstacle:
+            function collides() {
+                stop_game()
+            }
 
 
             function game_loop() {
