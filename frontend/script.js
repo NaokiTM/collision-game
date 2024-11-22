@@ -8,6 +8,7 @@
                 this.height = height;
                 this.colour = colour;
                 this.image = null; 
+                this.direction = 'right'; // Default direction
 
                 if (imageSource) {
                     this.image = new Image(); 
@@ -43,7 +44,7 @@
             canv.height = 500;  // Example height
 
             // let's have a red box to represent the player
-            let playerbox = new Box(0, 0, 20, 20, '#000000', 'images/aeroplane-icon.png');
+            let playerbox = new Box(0, 0, 20, 20, '#000000', 'images/plane-right.png');
 
             //listens for keypresses
             document.addEventListener('keydown', (event) => {
@@ -53,16 +54,35 @@
 
                 switch (event.code) {
                     case 'ArrowUp': // Move up
-                        if (playerbox.y > 0) playerbox.y -= moveInterval;
+                        if (playerbox.y > 0) {
+                            playerbox.y -= moveInterval;
+                            playerbox.image.src = 'images/plane-up.png'
+                            playerbox.draw()
+                        }
                         break;
+
                     case 'ArrowDown': // Move down
-                        if (playerbox.y + playerbox.height < canv.height) playerbox.y += moveInterval;
+                        if (playerbox.y + playerbox.height < canv.height) {
+                            playerbox.y += moveInterval;
+                            playerbox.image.src = 'images/plane-down.png'
+                            playerbox.draw()
+                        }
                         break;
+
                     case 'ArrowLeft': // Move left
-                        if (playerbox.x > 0) playerbox.x -= moveInterval;
+                        if (playerbox.x > 0) {
+                            playerbox.x -= moveInterval;
+                            playerbox.image.src = 'images/plane-left.png'
+                            playerbox.draw()
+                        }
                         break;
+
                     case 'ArrowRight': // Move right
-                        if (playerbox.x + playerbox.width < canv.width) playerbox.x += moveInterval;
+                        if (playerbox.x + playerbox.width < canv.width) {
+                            playerbox.x += moveInterval;
+                            playerbox.image.src = 'images/plane-right.png'
+                            playerbox.draw()
+                        }
                         break;
                 }
             })
