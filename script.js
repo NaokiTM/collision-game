@@ -24,7 +24,7 @@
             const ctx = canv.getContext("2d");
 
             // let's have a red box to represent the player
-            let playerbox = new Box(100,100,20,20,"#f00");
+            let playerbox = new Box(0,0,20,20,"#f00");
 
             //listens for keypresses
             document.addEventListener('keydown', (event) => {
