@@ -11,7 +11,7 @@ const collision_game = function() { // use a function to hide the identifiers us
     canv.height = 500;  // Example height
 
     // let's have a red box to represent the player
-    let playerbox = new Box(0, 0, 20, 20, '#000000', 'images/plane-right.png');
+    let playerbox = new Box(0, 0, 20, 20, '#000000', 'frontend/images/plane-right.png');
 
     //listens for keypresses
     document.addEventListener('keydown', (event) => {
@@ -23,7 +23,7 @@ const collision_game = function() { // use a function to hide the identifiers us
             case 'ArrowUp': // Move up
                 if (playerbox.y > 0) {
                     playerbox.y -= moveInterval;
-                    playerbox.image.src = 'images/plane-up.png'
+                    playerbox.image.src = 'frontend/images/plane-up.png'
                     playerbox.draw()
                 }
                 break;
@@ -31,7 +31,7 @@ const collision_game = function() { // use a function to hide the identifiers us
             case 'ArrowDown': // Move down
                 if (playerbox.y + playerbox.height < canv.height) {
                     playerbox.y += moveInterval;
-                    playerbox.image.src = 'images/plane-down.png'
+                    playerbox.image.src = 'frontend/images/plane-down.png'
                     playerbox.draw()
                 }
                 break;
@@ -39,7 +39,7 @@ const collision_game = function() { // use a function to hide the identifiers us
             case 'ArrowLeft': // Move left
                 if (playerbox.x > 0) {
                     playerbox.x -= moveInterval;
-                    playerbox.image.src = 'images/plane-left.png'
+                    playerbox.image.src = 'frontend/images/plane-left.png'
                     playerbox.draw()
                 }
                 break;
@@ -47,7 +47,7 @@ const collision_game = function() { // use a function to hide the identifiers us
             case 'ArrowRight': // Move right
                 if (playerbox.x + playerbox.width < canv.width) {
                     playerbox.x += moveInterval;
-                    playerbox.image.src = 'images/plane-right.png'
+                    playerbox.image.src = 'frontend/images/plane-right.png'
                     playerbox.draw()
                 }
                 break;
