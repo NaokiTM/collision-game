@@ -7,6 +7,7 @@ const collision_game = function() { // use a function to hide the identifiers us
     let clouds = []; // array to hold the things we might collide with
     let game_id;
     let playerSprite;
+    let collisionFlag = false;
 
     canv.width = 1000;
     canv.height = 500; 
@@ -121,6 +122,7 @@ const collision_game = function() { // use a function to hide the identifiers us
             obj1.left > obj2.right ) {
             return false;
         } else {
+            collisionFlag = true;
             return true;
         }
     }
@@ -139,13 +141,10 @@ const collision_game = function() { // use a function to hide the identifiers us
     }
 
 
-
-
     function game_loop() {
 
         playerSprite.updateBounds()
         playerSprite.draw(ctx)
-
         //clears the canvas to be redrawn later
         ctx.clearRect(0, 0, canv.width, canv.height);
         playerSprite.draw(ctx); //(re)draw the player box
@@ -157,9 +156,26 @@ const collision_game = function() { // use a function to hide the identifiers us
         }
 
         //replace with logic to check for intersections of hitboxes
-        for (let j = 0; j < 5; j++) {
-            if (intersects(playerSprite, clouds[j])) {
-                collision()
+        if (collisionFlag == false) {  //player is no longer intersecting with the obstacle
+            for (let j = 0; j < clouds.length; j++) {
+                if (intersects(playerSprite, clouds[j])) {
+                    collision()
+                    collisionFlag == true
+                    break;
+                }
+            }
+        } else if (collisionFlag == true) {  //player is/was intersecting with the obstacle
+            let stillColliding = false;
+            for (let j = 0; j < clouds.length; j++) {
+                if (intersects(playerSprite, clouds[j])) {
+                    stillColliding = true;
+                    break;
+                }
+            }
+            
+            // Reset the flag once the player is out of collision
+            if (!stillColliding) {
+                collisionFlag = false;
             }
         }
         
@@ -241,7 +257,7 @@ const collision_game = function() { // use a function to hide the identifiers us
     }
 
 
-    
+
 
     // start the game
     start_game()

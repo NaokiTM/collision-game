@@ -8,6 +8,8 @@ This is a game where the player controls an aeroplane sprite, and must avoid run
 
 Initially, I wanted to have a collision based game, using a vehicle of some kind to drive from one end of the canvas to another without hitting obstacles. 
 
+
+
 ## Attribution for images used: 
 
 ### Plane sprite:
