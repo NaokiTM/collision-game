@@ -1,11 +1,12 @@
 // a constructor for a box class 
-function Obstacle(x, y, width, height, colour, imageSource) {
+function Cloud(x, y, width, height, imageSource) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-    this.colour = colour;
+    this.colour = '#FFFFFF';
     this.image = null; 
+    this.movestep = 8;
 
     //replace later for proper async function if i have time.
     if (imageSource) {
@@ -15,6 +16,15 @@ function Obstacle(x, y, width, height, colour, imageSource) {
         this.image.onload = () => {
             this.draw(ctx); 
         };
+    }
+
+    this.move = function(canvasWidth) {
+        this.x += this.movestep;
+
+        // Reverse direction if it hits the canvas boundaries
+        if (this.x <= 0 || this.x + this.width >= canvasWidth) {
+            this.movestep = -this.movestep; // Reverse direction
+        }
     }
 
     this.draw = function (ctx) {

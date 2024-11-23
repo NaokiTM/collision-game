@@ -1,7 +1,7 @@
 const collision_game = function() { // use a function to hide the identifiers used in the collision game
 
     let collisionCount = 0; // holds the number of collisions so far
-    let boxes = []; // array to hold the things we might collide with
+    let clouds = []; // array to hold the things we might collide with
 
     // let's set up a canvas and a canvas context so we can draw stuff
     const canv = document.getElementById("game_canvas");
@@ -10,22 +10,29 @@ const collision_game = function() { // use a function to hide the identifiers us
     canv.width = 1000;  // Example width
     canv.height = 500;  // Example height
 
-    // let's have a red box to represent the player
+    // image to represent the player
     let playerbox = new Box(0, 0, 20, 20, '#000000', 'frontend/images/plane-right.png');
 
-    let cloud1 = new Obstacle(50, 50, 40, 40, '#FFFFFF', 'frontend/images/cloud.png')
-    let cloud2 = new Obstacle(50, 150, 40, 40, '#FFFFFF', 'frontend/images/cloud.png')
-    let cloud3 = new Obstacle(50, 250, 40, 40, '#FFFFFF', 'frontend/images/cloud.png')
-    let cloud4 = new Obstacle(50, 350, 40, 40, '#FFFFFF', 'frontend/images/cloud.png')
-    let cloud5 = new Obstacle(50, 430, 40, 40, '#FFFFFF', 'frontend/images/cloud.png')
+    // creates and stores the new obstacles
+    for (let i = 0; i < 5; i++) {
+        let x = Math.random() * canv.width; // Random x position
+        let y = 50 + (i * 100)
+        let width = 40; // Fixed width
+        let height = 40; // Fixed height
+        let imageSource = 'frontend/images/cloud.png'; // No image for now
+    
+        // Create an obstacle and push it to the array
+        clouds.push(new Cloud(x, y, width, height, imageSource));
+    }
 
 
     //listens for keypresses
     document.addEventListener('keydown', (event) => {
         const moveInterval = 10;
+        event.preventDefault()  //prevents page scrolling when using arrow keys
+
 
         //event.code ensures that the physical key is taken into account instead of the users programmed key settings
-
         switch (event.code) {
             case 'ArrowUp': // Move up
                 if (playerbox.y > 0) {
@@ -76,13 +83,10 @@ const collision_game = function() { // use a function to hide the identifiers us
         ctx.clearRect(0, 0, canv.width, canv.height);
         playerbox.draw(ctx); //(re)draw the player box
 
-        cloud1.draw(ctx);
-        cloud2.draw(ctx);
-        cloud3.draw(ctx);
-        cloud4.draw(ctx);
-        cloud5.draw(ctx);
-
-        
+        for (let i = 0; i < clouds.length; i++) {
+            clouds[i].move(canv.width); // Update position
+            clouds[i].draw(ctx); // Draw obstacle
+        }
 
         // This is where you could draw your obstacles and
         // perhaps check for collisions
