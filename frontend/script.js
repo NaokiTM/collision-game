@@ -13,6 +13,13 @@ const collision_game = function() { // use a function to hide the identifiers us
     // let's have a red box to represent the player
     let playerbox = new Box(0, 0, 20, 20, '#000000', 'frontend/images/plane-right.png');
 
+    let cloud1 = new Obstacle(50, 50, 40, 40, '#FFFFFF', 'frontend/images/cloud.png')
+    let cloud2 = new Obstacle(50, 150, 40, 40, '#FFFFFF', 'frontend/images/cloud.png')
+    let cloud3 = new Obstacle(50, 250, 40, 40, '#FFFFFF', 'frontend/images/cloud.png')
+    let cloud4 = new Obstacle(50, 350, 40, 40, '#FFFFFF', 'frontend/images/cloud.png')
+    let cloud5 = new Obstacle(50, 430, 40, 40, '#FFFFFF', 'frontend/images/cloud.png')
+
+
     //listens for keypresses
     document.addEventListener('keydown', (event) => {
         const moveInterval = 10;
@@ -56,7 +63,7 @@ const collision_game = function() { // use a function to hide the identifiers us
 
     //called when the playerbox collides into an obstacle:
     function collides() {
-        if (collisionCount > 3) {
+        if (collisionCount >= 3) {
             stop_game()
         } else {
             collisionCount++
@@ -69,12 +76,20 @@ const collision_game = function() { // use a function to hide the identifiers us
         ctx.clearRect(0, 0, canv.width, canv.height);
         playerbox.draw(ctx); //(re)draw the player box
 
+        cloud1.draw(ctx);
+        cloud2.draw(ctx);
+        cloud3.draw(ctx);
+        cloud4.draw(ctx);
+        cloud5.draw(ctx);
+
+        
+
         // This is where you could draw your obstacles and
         // perhaps check for collisions
 
         
         // update the collisions count
-        document.getElementById("p1").innerHTML = "Total collisions so far " + collisionCount;
+        document.getElementById("obstacle_counter").innerHTML = "Lives left: " + (3 - collisionCount);
     }
 
     function start_game() {
