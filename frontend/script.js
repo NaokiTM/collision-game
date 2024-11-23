@@ -12,6 +12,10 @@ const collision_game = function() { // use a function to hide the identifiers us
     canv.width = 1000;
     canv.height = 500; 
 
+
+
+
+
     // a constructor for a box class 
     function Sprite(x, y, width, height, colour, imageSource) {
         this.x = x;
@@ -59,6 +63,9 @@ const collision_game = function() { // use a function to hide the identifiers us
             ctx.restore();
         };
     }
+
+
+
 
     // a constructor for a box class 
     function Cloud(x, y, width, height, imageSource) {
@@ -133,10 +140,9 @@ const collision_game = function() { // use a function to hide the identifiers us
 
     //called when the playerSprite collides into an obstacle:
     function collision() {
-        if (collisionCount >= 3) {
+        collisionCount++
+        if (collisionCount == 3) {
             stop_game()
-        } else {
-            collisionCount++
         }
     }
 
@@ -172,7 +178,7 @@ const collision_game = function() { // use a function to hide the identifiers us
                     break;
                 }
             }
-            
+
             // Reset the flag once the player is out of collision
             if (!stillColliding) {
                 collisionFlag = false;
@@ -193,7 +199,7 @@ const collision_game = function() { // use a function to hide the identifiers us
 
         //listens for keypresses
         document.addEventListener('keydown', (event) => {
-            const moveInterval = 15;
+            const playerMoveInterval = 20;
             event.preventDefault()  //prevents page scrolling when using arrow keys
 
 
@@ -201,28 +207,28 @@ const collision_game = function() { // use a function to hide the identifiers us
             switch (event.code) {
                 case 'ArrowUp': // Move up
                     if (playerSprite.y > 0) {
-                        playerSprite.y -= moveInterval;
+                        playerSprite.y -= playerMoveInterval;
                         playerSprite.image.src = 'frontend/images/plane-up.png'
                     }
                     break;
 
                 case 'ArrowDown': // Move down
                     if (playerSprite.y + playerSprite.height < canv.height) {
-                        playerSprite.y += moveInterval;
+                        playerSprite.y += playerMoveInterval;
                         playerSprite.image.src = 'frontend/images/plane-down.png'
                     }
                     break;
 
                 case 'ArrowLeft': // Move left
                     if (playerSprite.x > 0) {
-                        playerSprite.x -= moveInterval;
+                        playerSprite.x -= playerMoveInterval;
                         playerSprite.image.src = 'frontend/images/plane-left.png'
                     }
                     break;
 
                 case 'ArrowRight': // Move right
                     if (playerSprite.x + playerSprite.width < canv.width) {
-                        playerSprite.x += moveInterval;
+                        playerSprite.x += playerMoveInterval;
                         playerSprite.image.src = 'frontend/images/plane-right.png'
                     }
                     break;
@@ -242,7 +248,8 @@ const collision_game = function() { // use a function to hide the identifiers us
             clouds.push(new Cloud(x, y, width, height, imageSource));
         }
 
-        return setInterval(game_loop, 50);  //resets every 50ms
+        game_id = setInterval(game_loop, 50);
+        return game_id //resets every 50ms
     }            
 
 
@@ -253,6 +260,8 @@ const collision_game = function() { // use a function to hide the identifiers us
 
     function stop_game() {
         clearInterval(game_id)
+        ctx.clearRect(0, 0, canv.width, canv.height);
+        collisionCount = 0;
         //add end screen here
     }
 
