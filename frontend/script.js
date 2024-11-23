@@ -3,15 +3,16 @@ const collision_game = function() { // use a function to hide the identifiers us
     const canv = document.getElementById("game_canvas");
     const ctx = canv.getContext("2d");
 
-    canv.width = 1000;  // Example width
-    canv.height = 500;  // Example height
-
-
     let collisionCount = 0; // holds the number of collisions so far
     let clouds = []; // array to hold the things we might collide with
+    let game_id;
+    let playerSprite;
+
+    canv.width = 1000;
+    canv.height = 500; 
 
     // a constructor for a box class 
-    function Box(x, y, width, height, colour, imageSource) {
+    function Sprite(x, y, width, height, colour, imageSource) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -19,6 +20,21 @@ const collision_game = function() { // use a function to hide the identifiers us
         this.colour = colour;
         this.image = null; 
         this.direction = 'right'; // Default direction
+
+        //define bounding area
+        this.top = this.y
+        this.bottom = this.y + this.height
+        this.left = this.x
+        this.right = this.x + this.width
+
+        //update bounding area
+        this.updateBounds = function() {
+            this.top = this.y
+            this.bottom = this.y + this.height
+            this.left = this.x
+            this.right = this.x + this.width
+
+        }
 
         //replace later for proper async function if i have time.
         if (imageSource) {
@@ -43,7 +59,7 @@ const collision_game = function() { // use a function to hide the identifiers us
         };
     }
 
-        // a constructor for a box class 
+    // a constructor for a box class 
     function Cloud(x, y, width, height, imageSource) {
         this.x = x;
         this.y = y;
@@ -52,6 +68,18 @@ const collision_game = function() { // use a function to hide the identifiers us
         this.colour = '#FFFFFF';
         this.image = null; 
         this.movestep = 8;
+
+        //define bounding area
+        this.top = this.y
+        this.bottom = this.y + this.height
+        this.left = this.x
+        this.right = this.x + this.width
+
+        //change bounding area
+        this.updateBounds = function() {
+            this.left = this.x
+            this.right = this.x + this.width
+        }
 
         //replace later for proper async function if i have time.
         if (imageSource) {
@@ -85,65 +113,23 @@ const collision_game = function() { // use a function to hide the identifiers us
         };
     }
 
-    // image to represent the player
-    let playerbox = new Box(0, 0, 20, 20, '#000000', 'frontend/images/plane-right.png');
-
-    // creates and stores the new obstacles
-    for (let i = 0; i < 5; i++) {
-        let x = Math.random() * canv.width; // Random x position
-        let y = 50 + (i * 100)  //each cloud is placed 100 pixels below another
-        let width = 40;
-        let height = 40;
-        let imageSource = 'frontend/images/cloud.png'; // No image for now
-    
-        // Create an obstacle and push it to the array
-        clouds.push(new Cloud(x, y, width, height, imageSource));
+    //function to determine if 2 objects intersect (player and obstacle in this case)
+    function intersects(obj1, obj2) {
+        if (obj1.bottom < obj2.top ||
+            obj1.top > obj2.bottom ||
+            obj1.right < obj2.left ||
+            obj1.left > obj2.right ) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 
-    //listens for keypresses
-    document.addEventListener('keydown', (event) => {
-        const moveInterval = 10;
-        event.preventDefault()  //prevents page scrolling when using arrow keys
 
 
-        //event.code ensures that the physical key is taken into account instead of the users programmed key settings
-        switch (event.code) {
-            case 'ArrowUp': // Move up
-                if (playerbox.y > 0) {
-                    playerbox.y -= moveInterval;
-                    playerbox.image.src = 'frontend/images/plane-up.png'
-                    playerbox.draw(ctx)
-                }
-                break;
 
-            case 'ArrowDown': // Move down
-                if (playerbox.y + playerbox.height < canv.height) {
-                    playerbox.y += moveInterval;
-                    playerbox.image.src = 'frontend/images/plane-down.png'
-                    playerbox.draw(ctx)
-                }
-                break;
-
-            case 'ArrowLeft': // Move left
-                if (playerbox.x > 0) {
-                    playerbox.x -= moveInterval;
-                    playerbox.image.src = 'frontend/images/plane-left.png'
-                    playerbox.draw(ctx)
-                }
-                break;
-
-            case 'ArrowRight': // Move right
-                if (playerbox.x + playerbox.width < canv.width) {
-                    playerbox.x += moveInterval;
-                    playerbox.image.src = 'frontend/images/plane-right.png'
-                    playerbox.draw(ctx)
-                }
-                break;
-        }
-    })
-
-    //called when the playerbox collides into an obstacle:
+    //called when the playerSprite collides into an obstacle:
     function collision() {
         if (collisionCount >= 3) {
             stop_game()
@@ -152,47 +138,111 @@ const collision_game = function() { // use a function to hide the identifiers us
         }
     }
 
+
+
+
     function game_loop() {
+
+        playerSprite.updateBounds()
+        playerSprite.draw(ctx)
 
         //clears the canvas to be redrawn later
         ctx.clearRect(0, 0, canv.width, canv.height);
-        playerbox.draw(ctx); //(re)draw the player box
+        playerSprite.draw(ctx); //(re)draw the player box
 
         for (let i = 0; i < clouds.length; i++) {
             clouds[i].move(canv.width); // Update position
+            clouds[i].updateBounds()
             clouds[i].draw(ctx); // Draw obstacle
         }
 
+        //replace with logic to check for intersections of hitboxes
         for (let j = 0; j < 5; j++) {
-            if (clouds[j].x == playerbox.x && clouds[j].y == playerbox.y) {
+            if (intersects(playerSprite, clouds[j])) {
                 collision()
             }
         }
-        
-
-        // This is where you could draw your obstacles and
-        // perhaps check for collisions
-
         
         // update the collisions count
         document.getElementById("obstacle_counter").innerHTML = "Lives left: " + (3 - collisionCount);
     }
 
+
+
+
+
+
+
     function start_game() {
 
-        // write some code here to add some boxes to the boxes array
+        //listens for keypresses
+        document.addEventListener('keydown', (event) => {
+            const moveInterval = 15;
+            event.preventDefault()  //prevents page scrolling when using arrow keys
 
-        // set up an interval timer to call game_loop every 50 ms
-        // return the value of the interval timer so we can stop it later
+
+            //event.code ensures that the physical key is taken into account instead of the users programmed key settings
+            switch (event.code) {
+                case 'ArrowUp': // Move up
+                    if (playerSprite.y > 0) {
+                        playerSprite.y -= moveInterval;
+                        playerSprite.image.src = 'frontend/images/plane-up.png'
+                    }
+                    break;
+
+                case 'ArrowDown': // Move down
+                    if (playerSprite.y + playerSprite.height < canv.height) {
+                        playerSprite.y += moveInterval;
+                        playerSprite.image.src = 'frontend/images/plane-down.png'
+                    }
+                    break;
+
+                case 'ArrowLeft': // Move left
+                    if (playerSprite.x > 0) {
+                        playerSprite.x -= moveInterval;
+                        playerSprite.image.src = 'frontend/images/plane-left.png'
+                    }
+                    break;
+
+                case 'ArrowRight': // Move right
+                    if (playerSprite.x + playerSprite.width < canv.width) {
+                        playerSprite.x += moveInterval;
+                        playerSprite.image.src = 'frontend/images/plane-right.png'
+                    }
+                    break;
+            }
+        })
+
+        playerSprite = new Sprite(0, 0, 20, 20, '#000000', 'frontend/images/plane-right.png');
+
+        for (let i = 0; i < 5; i++) {
+            let x = Math.random() * canv.width; // Random x position
+            let y = 50 + (i * 100)  //each cloud is placed 100 pixels below another
+            let width = 40;
+            let height = 40;
+            let imageSource = 'frontend/images/cloud.png';
+
+            // Create an obstacle and push it to the array
+            clouds.push(new Cloud(x, y, width, height, imageSource));
+        }
+
         return setInterval(game_loop, 50);  //resets every 50ms
     }            
 
+
+
+
+
+
+
     function stop_game() {
-        // add something here - like a game-over pop-up or something more interesting
         clearInterval(game_id)
+        //add end screen here
     }
 
-    // start the game, save the id of the interval timer so we can stop it later
-    const game_id = start_game()
-}(); // Run the namespace so that it initialises and run the game. Having
-// a namespace will allow access to the stop_game function from HTML...
+
+    
+
+    // start the game
+    start_game()
+}();
