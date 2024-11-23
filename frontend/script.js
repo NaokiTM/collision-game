@@ -1,127 +1,97 @@
-        const collision_game = function() { // use a function to hide the identifiers used in the collision game
+const collision_game = function() { // use a function to hide the identifiers used in the collision game
 
-            // a constructor for a box class 
-            function Box(x, y, width, height, colour, imageSource) {
-                this.x = x;
-                this.y = y;
-                this.width = width;
-                this.height = height;
-                this.colour = colour;
-                this.image = null; 
-                this.direction = 'right'; // Default direction
+    let collisionCount = 0; // holds the number of collisions so far
+    let boxes = []; // array to hold the things we might collide with
 
-                if (imageSource) {
-                    this.image = new Image(); 
-                    this.image.src = imageSource;
+    // let's set up a canvas and a canvas context so we can draw stuff
+    const canv = document.getElementById("game_canvas");
+    const ctx = canv.getContext("2d");
 
-                    this.image.onload = () => {
-                        this.draw(ctx); 
-                    };
+    canv.width = 1000;  // Example width
+    canv.height = 500;  // Example height
+
+    // let's have a red box to represent the player
+    let playerbox = new Box(0, 0, 20, 20, '#000000', 'images/plane-right.png');
+
+    //listens for keypresses
+    document.addEventListener('keydown', (event) => {
+        const moveInterval = 10;
+
+        //event.code ensures that the physical key is taken into account instead of the users programmed key settings
+
+        switch (event.code) {
+            case 'ArrowUp': // Move up
+                if (playerbox.y > 0) {
+                    playerbox.y -= moveInterval;
+                    playerbox.image.src = 'images/plane-up.png'
+                    playerbox.draw()
                 }
+                break;
 
-                this.draw = function (ctx) {
-                    ctx.save();
-                    if (this.image && this.image.complete) {
-                        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-                    } else {
-                        //if an image isn't provided, or doesn't load, replace with a colour
-                        ctx.fillStyle = this.colour;
-                        ctx.fillRect(this.x, this.y, this.width, this.height);
-                    }
-                    ctx.restore();
-                };
-            }
-
-            // let's have a couple of shared variables.
-            let collisions_count = 0; // holds the number of collisions so far
-            let boxes = []; // array to hold the things we might collide with
-
-            // let's set up a canvas and a canvas context so we can draw stuff
-            const canv = document.getElementById("game_canvas");
-            const ctx = canv.getContext("2d");
-
-            canv.width = 1000;  // Example width
-            canv.height = 500;  // Example height
-
-            // let's have a red box to represent the player
-            let playerbox = new Box(0, 0, 20, 20, '#000000', 'images/plane-right.png');
-
-            //listens for keypresses
-            document.addEventListener('keydown', (event) => {
-                const moveInterval = 10;
-
-                //event.code ensures that the physical key is taken into account instead of the users programmed key settings
-
-                switch (event.code) {
-                    case 'ArrowUp': // Move up
-                        if (playerbox.y > 0) {
-                            playerbox.y -= moveInterval;
-                            playerbox.image.src = 'images/plane-up.png'
-                            playerbox.draw()
-                        }
-                        break;
-
-                    case 'ArrowDown': // Move down
-                        if (playerbox.y + playerbox.height < canv.height) {
-                            playerbox.y += moveInterval;
-                            playerbox.image.src = 'images/plane-down.png'
-                            playerbox.draw()
-                        }
-                        break;
-
-                    case 'ArrowLeft': // Move left
-                        if (playerbox.x > 0) {
-                            playerbox.x -= moveInterval;
-                            playerbox.image.src = 'images/plane-left.png'
-                            playerbox.draw()
-                        }
-                        break;
-
-                    case 'ArrowRight': // Move right
-                        if (playerbox.x + playerbox.width < canv.width) {
-                            playerbox.x += moveInterval;
-                            playerbox.image.src = 'images/plane-right.png'
-                            playerbox.draw()
-                        }
-                        break;
+            case 'ArrowDown': // Move down
+                if (playerbox.y + playerbox.height < canv.height) {
+                    playerbox.y += moveInterval;
+                    playerbox.image.src = 'images/plane-down.png'
+                    playerbox.draw()
                 }
-            })
+                break;
 
-            //called when the playerbox collides into an obstacle:
-            function collides() {
-                stop_game()
-            }
+            case 'ArrowLeft': // Move left
+                if (playerbox.x > 0) {
+                    playerbox.x -= moveInterval;
+                    playerbox.image.src = 'images/plane-left.png'
+                    playerbox.draw()
+                }
+                break;
 
+            case 'ArrowRight': // Move right
+                if (playerbox.x + playerbox.width < canv.width) {
+                    playerbox.x += moveInterval;
+                    playerbox.image.src = 'images/plane-right.png'
+                    playerbox.draw()
+                }
+                break;
+        }
+    })
 
-            function game_loop() {
+    //called when the playerbox collides into an obstacle:
+    function collides() {
+        if (collisionCount > 3) {
+            stop_game()
+        } else {
+            collisionCount++
+        }
+    }
 
-                //clears the canvas to be redrawn later
-                ctx.clearRect(0, 0, canv.width, canv.height);
-                playerbox.draw(ctx); //(re)draw the player box
+    function game_loop() {
 
-                // This is where you could draw your obstacles and
-                // perhaps check for collisions
+        //clears the canvas to be redrawn later
+        ctx.clearRect(0, 0, canv.width, canv.height);
+        playerbox.draw(ctx); //(re)draw the player box
 
-                
-                // update the collisions count
-                document.getElementById("p1").innerHTML = "Total collisions so far " + collisions_count;
-            }
+        // This is where you could draw your obstacles and
+        // perhaps check for collisions
 
-            function start_game() {
+        
+        // update the collisions count
+        document.getElementById("p1").innerHTML = "Total collisions so far " + collisionCount;
+    }
 
-                // write some code here to add some boxes to the boxes array
+    function start_game() {
 
-                // set up an interval timer to call game_loop every 50 ms
-                // return the value of the interval timer so we can stop it later
-                return setInterval(game_loop, 50);  //resets every 50ms
-            }            
+        // write some code here to add some boxes to the boxes array
 
-            function stop_game() {
-                // add something here - like a game-over pop-up or something more interesting
-                clearInterval(game_id)
-            }
+        // set up an interval timer to call game_loop every 50 ms
+        // return the value of the interval timer so we can stop it later
+        return setInterval(game_loop, 50);  //resets every 50ms
+    }            
 
-            // start the game, save the id of the interval timer so we can stop it later
-            const game_id = start_game()
-        }(); // Run the namespace so that it initialises and run the game. Having
-        // a namespace will allow access to the stop_game function from HTML...
+    function stop_game() {
+        // add something here - like a game-over pop-up or something more interesting
+        clearInterval(game_id)
+    }
+
+    // start the game, save the id of the interval timer so we can stop it later
+    const game_id = start_game()
+}(); // Run the namespace so that it initialises and run the game. Having
+// a namespace will allow access to the stop_game function from HTML...
