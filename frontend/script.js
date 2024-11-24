@@ -161,6 +161,21 @@ const collision_game = function() { // use a function to hide the identifiers us
         }
     }
 
+    function drawHeartsLeft() {
+        let livesLeft = 3 - collisionCount
+        ctx.save()
+
+        const heart = new Image()
+        heart.src = "frontend/images/heart.png"
+
+        for (i = 0; i <= livesLeft; i++) {
+            let step = i * 50  //each heart is placed 50 pixels further to the left of the previous
+            ctx.drawImage(heart, canv.width - step, 0, 50, 50)  //drawn in the top right corner of the canvas
+        }
+
+        ctx.restore()
+    }
+
 
     function game_loop() {
 
@@ -199,9 +214,8 @@ const collision_game = function() { // use a function to hide the identifiers us
                 collisionFlag = false;
             }
         }
-        
-        // update the collisions count
-        document.getElementById("obstacle_counter").innerHTML = "Lives left: " + (3 - collisionCount);
+
+        drawHeartsLeft()
     }
 
 
