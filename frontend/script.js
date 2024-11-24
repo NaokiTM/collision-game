@@ -8,13 +8,28 @@ const collision_game = function() { // use a function to hide the identifiers us
     let game_id;
     let playerSprite;
     let collisionFlag = false;
+    let preventDefaultFlag = false;
 
-    canv.width = 1000;
-    canv.height = 500; 
+    //sets the canvas to take up the entire viewport
+    canv.width = window.innerWidth;
+    canv.height = window.innerHeight;
 
+    //waits for username form submit button to be clicked, then displays the welcome message and canvas. 
+    startButton.addEventListener("click", (event) => {
+        event.preventDefault()  //prevents page scrolling when using arrow keys
+        preventDefaultFlag = true;
 
+        const userForm = document.getElementById("user-form")
+        const welcomeTitle = document.getElementById("title")
 
+        let playerUsername = userForm.elements["username"].value
+        console.log("the players username is: " + playerUsername)
 
+        userForm.style.display = "none";
+        welcomeTitle.style.display = "block";
+        canv.style.display = "block";
+        console.log("button clicked")
+    })
 
     // a constructor for a box class 
     function Sprite(x, y, width, height, colour, imageSource) {
@@ -75,18 +90,18 @@ const collision_game = function() { // use a function to hide the identifiers us
         this.height = height;
         this.colour = '#FFFFFF';
         this.image = null; 
-        this.movestep = 8;
+        this.movestep = 8;  //speed at which the clouds move across the screen
 
         //define bounding area
-        this.top = this.y
-        this.bottom = this.y + this.height
-        this.left = this.x
-        this.right = this.x + this.width
+        this.top = this.y + 20
+        this.bottom = (this.y + this.height) - 20
+        this.left = this.x + 20
+        this.right = (this.x + this.width) - 20
 
-        //change bounding area
+        //change bounding area - left and right only because the clouds only move horizontally
         this.updateBounds = function() {
-            this.left = this.x
-            this.right = this.x + this.width
+            this.left = this.x + 20
+            this.right = this.x + this.width - 20
         }
 
         //replace later for proper async function if i have time.
@@ -194,14 +209,15 @@ const collision_game = function() { // use a function to hide the identifiers us
 
 
 
-
     function start_game() {
 
         //listens for keypresses
         document.addEventListener('keydown', (event) => {
             const playerMoveInterval = 20;
-            event.preventDefault()  //prevents page scrolling when using arrow keys
 
+            if (preventDefaultFlag) {
+                event.preventDefault(); // Prevent page scrolling and other default key actions
+            }
 
             //event.code ensures that the physical key is taken into account instead of the users programmed key settings
             switch (event.code) {
@@ -235,13 +251,13 @@ const collision_game = function() { // use a function to hide the identifiers us
             }
         })
 
-        playerSprite = new Sprite(0, 0, 20, 20, '#000000', 'frontend/images/plane-right.png');
+        playerSprite = new Sprite(0, 0, 27, 27, '#000000', 'frontend/images/plane-right.png');
 
         for (let i = 0; i < 5; i++) {
             let x = Math.random() * canv.width; // Random x position
             let y = 50 + (i * 100)  //each cloud is placed 100 pixels below another
-            let width = 40;
-            let height = 40;
+            let width = 70;
+            let height = 70;
             let imageSource = 'frontend/images/cloud.png';
 
             // Create an obstacle and push it to the array

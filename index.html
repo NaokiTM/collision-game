@@ -5,16 +5,19 @@
 </head>
 
 <body>
-
-    <h1>Risky flying game</h1>
-    <p id = "obstacle_counter"></p> 
+    <form id = "user-form">
+        <label for="player-username">Username:</label>
+        <input type="text" id="username" name="username" default='user name'>
+        <button type = "button" id = "startButton">Go</button>
+    </form> 
+    <div id = "title">
+        <h1 >Risky flying game</h1>
+        <h2 id = "obstacle_counter"></h2> 
+    </div>
     <canvas id = "game_canvas"></canvas>
-
-    <!-- constructors need to be loaded in before being used in script.js -->
-    <!-- <script src="frontend/constructors/Box.js"></script>   
-    <script src="frontend/constructors/Cloud.js"></script> -->
-    <script src="frontend/script.js" ></script>
     <footer>
         <a href="https://www.flaticon.com/free-icons/cloud" title="cloud icons">Cloud icons created by Freepik - Flaticon</a>
     </footer>
+    <script src="frontend/script.js" ></script>
 </body>
+</html>
