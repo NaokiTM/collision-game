@@ -211,26 +211,29 @@ function game () { // use a function to hide the identifiers used in the collisi
     }
 
     function start_game() {
+        const noOfClouds = 10  //any more than 10 pushes clouds down so no longer visible - fix later
+        const noOfParachutes = 5
+
         listenForKeyPress()
 
         playerSprite = new Sprite(0, 0, 27, 27, '#000000', 'frontend/images/plane-right.png', ctx);
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < noOfClouds; i++) {
             let width = 70;
             let height = 70;
-            let x = Math.random() * (canv.width - width); // Random x position
-            let y = 50 + (i * 100)  //each cloud is placed 100 pixels below another
+            let x = Math.random() * (canv.width - width); // Random x position (accounting for the width of each obstacle)
+            let y = 50 + (i * ((canv.height - 50) / noOfClouds));  //spaces clouds out evenly, whilst leaving top 50 pixels of the canvas empty
             let imageSource = 'frontend/images/cloud.png';
 
             // Create an obstacle and push it to the array
             clouds.push(new Cloud(x, y, width, height, imageSource, ctx));
         }
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < noOfParachutes; i++) {
             let width = 70;
             let height = 70;
             let x = Math.random() * (canv.width - width); // Random x position
-            let y = 50 + (i * 100)  //each cloud is placed 100 pixels below another
+            let y = 50 + (i * ((canv.height - 50) / noOfParachutes));
             let imageSource = 'frontend/images/parachute.png';
 
             // Create an obstacle and push it to the array
