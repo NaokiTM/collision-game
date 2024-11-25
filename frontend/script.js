@@ -154,48 +154,25 @@ const collision_game = function() { // use a function to hide the identifiers us
 
 
     //called when the playerSprite collides into an obstacle:
-    function collision() {
+    function updateCollisionCount() {
         collisionCount++
         if (collisionCount == 3) {
             stop_game()
         }
     }
 
-    function drawHeartsLeft() {
-        let livesLeft = 3 - collisionCount
-        ctx.save()
-
-        const heart = new Image()
-        heart.src = "frontend/images/heart.png"
-
-        for (i = 0; i <= livesLeft; i++) {
-            let step = i * 50  //each heart is placed 50 pixels further to the left of the previous
-            ctx.drawImage(heart, canv.width - step, 0, 50, 50)  //drawn in the top right corner of the canvas
-        }
-
-        ctx.restore()
-    }
-
-
-    function game_loop() {
-
-        playerSprite.updateBounds()
-        playerSprite.draw(ctx)
-        //clears the canvas to be redrawn later
-        ctx.clearRect(0, 0, canv.width, canv.height);
-        playerSprite.draw(ctx); //(re)draw the player box
-
+    function checkForCollisions() {
+        //updates position of clouds, then updates each ones boundaries, then draws the clouds in their new position
         for (let i = 0; i < clouds.length; i++) {
-            clouds[i].move(canv.width); // Update position
+            clouds[i].move(canv.width);
             clouds[i].updateBounds()
-            clouds[i].draw(ctx); // Draw obstacle
+            clouds[i].draw(ctx);
         }
 
-        //replace with logic to check for intersections of hitboxes
         if (collisionFlag == false) {  //player is no longer intersecting with the obstacle
             for (let j = 0; j < clouds.length; j++) {
                 if (intersects(playerSprite, clouds[j])) {
-                    collision()
+                    updateCollisionCount()
                     collisionFlag == true
                     break;
                 }
@@ -214,16 +191,24 @@ const collision_game = function() { // use a function to hide the identifiers us
                 collisionFlag = false;
             }
         }
-
-        drawHeartsLeft()
     }
 
+    function drawHeartsLeft() {
+        let livesLeft = 3 - collisionCount
+        ctx.save()
 
+        const heart = new Image()
+        heart.src = "frontend/images/heart.png"
 
+        for (i = 0; i <= livesLeft; i++) {
+            let step = i * 50  //each heart is placed 50 pixels further to the left of the previous
+            ctx.drawImage(heart, canv.width - step, 0, 50, 50)  //drawn in the top right corner of the canvas
+        }
 
+        ctx.restore()
+    }
 
-
-    function start_game() {
+    function listenForKeyPress() {
 
         //listens for keypresses
         document.addEventListener('keydown', (event) => {
@@ -264,6 +249,11 @@ const collision_game = function() { // use a function to hide the identifiers us
                     break;
             }
         })
+    }
+
+
+    function start_game() {
+        listenForKeyPress()
 
         playerSprite = new Sprite(0, 0, 27, 27, '#000000', 'frontend/images/plane-right.png');
 
@@ -283,9 +273,17 @@ const collision_game = function() { // use a function to hide the identifiers us
     }            
 
 
+    function game_loop() {
+        //clears the canvas before redrawing new position
+        ctx.clearRect(0, 0, canv.width, canv.height);
 
+        //update coordinates of player hitbox, and redraw the player
+        playerSprite.updateBounds()
+        playerSprite.draw(ctx); 
 
-
+        checkForCollisions()
+        drawHeartsLeft()
+    }
 
 
     function stop_game() {
