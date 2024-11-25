@@ -11,22 +11,27 @@ body {
     padding: 0;
 }
 
+footer, #username_form {
+    display: flex;
+    flex-direction: column;
+}
+
+#game_canvas, #title {
+    display: none;
+}
+
 #game_canvas {
     border: 1px dotted;
     background-color: skyblue;
-    display: none;
 }
 
 #title {
     position: absolute;
     text-align: center;
     line-height: 1;
-    display: none;
 }
 
 #username_form {
-    display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh; /* Full viewport height */
@@ -56,17 +61,12 @@ body {
 }
 
 #userform_button {
+    color: white;
     font-size: 25px;
     background-color: red;
-    color: white;
     border-radius: 25px;
     width: auto;
     height: auto;
     padding-left: 10%;
     padding-right: 10%;
-}
-
-footer {
-    display: flex;
-    flex-direction: column;
 }
