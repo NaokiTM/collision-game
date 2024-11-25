@@ -13,10 +13,11 @@ function game () {
 
     let clouds = []; // array to hold the things we might collide with
     let parachutes = []
-    let gameId;
+    let gameId = null;
     let playerSprite;
     let collisionFlag = false;
     let preventDefaultFlag = false;
+    let gameEnded = false;
 
     let timeStarted
     let timeEnded
@@ -60,20 +61,25 @@ function game () {
 
     //called when the playerSprite collides into an obstacle:
     function updateCloudCollisionCount() {
-        cloudCollisionCount++
-        if (cloudCollisionCount == 3) {
-            stopGame("lost")
+        if (!gameEnded) {
+            cloudCollisionCount++
+            if (cloudCollisionCount == 3) {
+                stopGame("lost")
+            }
         }
     }
 
     function updateParachuteCollisionCount() {
-        parachuteCollisionCount++
-        if (parachuteCollisionCount == 5) {
-            stopGame("won")
-        }
+        if (!gameEnded) {
+            parachuteCollisionCount++
+            if (parachuteCollisionCount == 5) {
+                stopGame("won")
+            }
+        } 
     }
 
     function checkForCloudCollisions() {
+
         //updates position of clouds, then updates each ones boundaries, then draws the clouds in their new position
         for (let i = 0; i < clouds.length; i++) {
             clouds[i].move(canv.width);
@@ -121,62 +127,59 @@ function game () {
     }
 
     function drawHeartsLeft() {
-        let livesLeft = 3 - cloudCollisionCount
-        ctx.save()
+        if (!gameEnded) {
+            let livesLeft = 3 - cloudCollisionCount
+            ctx.save()
 
-        const heart = new Image()
-        heart.src = "frontend/images/heart.png"
+            const heart = new Image()
+            heart.src = "frontend/images/heart.png"
 
-        for (let i = 0; i <= livesLeft; i++) {
-            let step = i * 50  //each heart is placed 50 pixels further to the left of the previous
-            ctx.drawImage(heart, canv.width - step, 0, 50, 50)  //drawn in the top right corner of the canvas
+            for (let i = 0; i <= livesLeft; i++) {
+                let step = i * 50  //each heart is placed 50 pixels further to the left of the previous
+                ctx.drawImage(heart, canv.width - step, 0, 50, 50)  //drawn in the top right corner of the canvas
+            }
+        }
+    }
+
+    function listenForKeyPress(event) {
+        const playerMoveInterval = 20;
+
+        if (preventDefaultFlag) {
+            event.preventDefault(); // Prevent page scrolling and other default key actions
         }
 
-        ctx.restore()
+        //event.code ensures that the physical key is taken into account instead of the users programmed key settings
+        switch (event.code) {
+            case 'ArrowUp': // Move up
+                if (playerSprite.y > 0) {
+                    playerSprite.y -= playerMoveInterval;
+                    playerSprite.image.src = 'frontend/images/plane-up.png'
+                }
+                break;
+
+            case 'ArrowDown': // Move down
+                if (playerSprite.y + playerSprite.height < canv.height) {
+                    playerSprite.y += playerMoveInterval;
+                    playerSprite.image.src = 'frontend/images/plane-down.png'
+                }
+                break;
+
+            case 'ArrowLeft': // Move left
+                if (playerSprite.x > 0) {
+                    playerSprite.x -= playerMoveInterval;
+                    playerSprite.image.src = 'frontend/images/plane-left.png'
+                }
+                break;
+
+            case 'ArrowRight': // Move right
+                if (playerSprite.x + playerSprite.width < canv.width) {
+                    playerSprite.x += playerMoveInterval;
+                    playerSprite.image.src = 'frontend/images/plane-right.png'
+                }
+                break;
+        }
     }
-
-    function listenForKeyPress() {
-
-        //listens for keypresses
-        document.addEventListener('keydown', (event) => {
-            const playerMoveInterval = 20;
-
-            if (preventDefaultFlag) {
-                event.preventDefault(); // Prevent page scrolling and other default key actions
-            }
-
-            //event.code ensures that the physical key is taken into account instead of the users programmed key settings
-            switch (event.code) {
-                case 'ArrowUp': // Move up
-                    if (playerSprite.y > 0) {
-                        playerSprite.y -= playerMoveInterval;
-                        playerSprite.image.src = 'frontend/images/plane-up.png'
-                    }
-                    break;
-
-                case 'ArrowDown': // Move down
-                    if (playerSprite.y + playerSprite.height < canv.height) {
-                        playerSprite.y += playerMoveInterval;
-                        playerSprite.image.src = 'frontend/images/plane-down.png'
-                    }
-                    break;
-
-                case 'ArrowLeft': // Move left
-                    if (playerSprite.x > 0) {
-                        playerSprite.x -= playerMoveInterval;
-                        playerSprite.image.src = 'frontend/images/plane-left.png'
-                    }
-                    break;
-
-                case 'ArrowRight': // Move right
-                    if (playerSprite.x + playerSprite.width < canv.width) {
-                        playerSprite.x += playerMoveInterval;
-                        playerSprite.image.src = 'frontend/images/plane-right.png'
-                    }
-                    break;
-            }
-        })
-    }
+    
 
     function welcome() {
         //welcome screen here
@@ -197,7 +200,7 @@ function game () {
 
         let gameStarted = false;
 
-        const gameStartListener = (event) => {
+        function gameStartListener() {
             if (!gameStarted) {
                 gameStarted = true;
                 document.removeEventListener("keydown", gameStartListener); 
@@ -213,7 +216,8 @@ function game () {
         const noOfClouds = 10  //any more than 10 pushes clouds down so no longer visible - fix later
         const noOfParachutes = 5
 
-        listenForKeyPress()
+        // listenForKeyPress()
+        document.addEventListener('keydown', listenForKeyPress)
 
         playerSprite = new Sprite(0, 0, 27, 27, '#000000', 'frontend/images/plane-right.png', ctx);
 
@@ -259,30 +263,34 @@ function game () {
         drawHeartsLeft()
     }
 
-
     function stopGame(wonOrLost) {
-
+        gameEnded = true
         clearInterval(gameId)
+        gameId = null;
         ctx.clearRect(0, 0, canv.width, canv.height);
+        document.removeEventListener("keydown", listenForKeyPress)
+
         cloudCollisionCount = 0
         parachuteCollisionCount = 0
-        //add end screen here
+        clouds = []
+        parachutes = []
+
+        ctx.clearRect(0, 0, canv.width, canv.height);
 
         if (wonOrLost == "won") {
+
+            //game won, time is saved
             timeEnded = Date.now()
             const timeScore = (timeEnded - timeStarted) / 1000 //in seconds
             console.log("your time was: " + timeScore)
 
             timeStarted = 0;
             timeEnded = 0;
-
-            //game won, time is saved
+            
         } else if (wonOrLost == "lost") {
-            console.log("lost??")
-
+            //game lost, time not saved
             timeStarted = 0;
             timeEnded = 0;
-            //game lost, time is not saved
         }
     }
 
