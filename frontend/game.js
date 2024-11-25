@@ -1,4 +1,8 @@
-const collision_game = function() { // use a function to hide the identifiers used in the collision game
+import Sprite from "./constructors/Sprite.js";
+import Cloud from "./constructors/Cloud.js";
+
+function game () { // use a function to hide the identifiers used in the collision gameee
+
     // let's set up a canvas and a canvas context so we can draw stuff
     const canv = document.getElementById("game_canvas");
     const ctx = canv.getContext("2d");
@@ -28,118 +32,12 @@ const collision_game = function() { // use a function to hide the identifiers us
             alert("Username cannot be longer than 14 characters")
             userForm.elements["username"].value = "";
         } else {
-            usernameCorrectFormat = true;
             userForm.style.display = "none";
             footer.style.display = "none"
             canv.style.display = "block";
             console.log("button clicked")
         }   
     })
-
-    // a constructor for a box class 
-    function Sprite(x, y, width, height, colour, imageSource) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.colour = colour;
-        this.image = null; 
-        this.direction = 'right'; // Default direction
-
-        //define bounding area
-        this.top = this.y
-        this.bottom = this.y + this.height
-        this.left = this.x
-        this.right = this.x + this.width
-
-        //update bounding area
-        this.updateBounds = function() {
-            this.top = this.y
-            this.bottom = this.y + this.height
-            this.left = this.x
-            this.right = this.x + this.width
-
-        }
-
-        //replace later for proper async function if i have time.
-        if (imageSource) {
-            this.image = new Image(); 
-            this.image.src = imageSource;
-
-            this.image.onload = () => {
-                this.draw(ctx); 
-            };
-        }
-
-        this.draw = function (ctx) {
-            ctx.save();
-            if (this.image && this.image.complete) {
-                ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-            } else {
-                //if an image isn't provided, or doesn't load, replace with a colour
-                ctx.fillStyle = this.colour;
-                ctx.fillRect(this.x, this.y, this.width, this.height);
-            }
-            ctx.restore();
-        };
-    }
-
-
-
-
-    // a constructor for a box class 
-    function Cloud(x, y, width, height, imageSource) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.colour = '#FFFFFF';
-        this.image = null; 
-        this.movestep = 8;  //speed at which the clouds move across the screen
-
-        //define bounding area
-        this.top = this.y + 20
-        this.bottom = (this.y + this.height) - 20
-        this.left = this.x + 20
-        this.right = (this.x + this.width) - 20
-
-        //change bounding area - left and right only because the clouds only move horizontally
-        this.updateBounds = function() {
-            this.left = this.x + 20
-            this.right = this.x + this.width - 20
-        }
-
-        //replace later for proper async function if i have time.
-        if (imageSource) {
-            this.image = new Image(); 
-            this.image.src = imageSource;
-
-            this.image.onload = () => {
-                this.draw(ctx); 
-            };
-        }
-
-        this.move = function(canvasWidth) {
-            this.x += this.movestep;
-
-            // Reverse direction if it hits the canvas boundaries
-            if (this.x <= 0 || this.x + this.width >= canvasWidth) {
-                this.movestep = -this.movestep; // Reverse direction
-            }
-        }
-
-        this.draw = function (ctx) {
-            ctx.save();
-            if (this.image && this.image.complete) {
-                ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-            } else {
-                //if an image isn't provided, or doesn't load, replace with a colour
-                ctx.fillStyle = this.colour;
-                ctx.fillRect(this.x, this.y, this.width, this.height);
-            }
-            ctx.restore();
-        };
-    }
 
     //function to determine if 2 objects intersect (player and obstacle in this case)
     function intersects(obj1, obj2) {
@@ -205,7 +103,7 @@ const collision_game = function() { // use a function to hide the identifiers us
         const heart = new Image()
         heart.src = "frontend/images/heart.png"
 
-        for (i = 0; i <= livesLeft; i++) {
+        for (let i = 0; i <= livesLeft; i++) {
             let step = i * 50  //each heart is placed 50 pixels further to the left of the previous
             ctx.drawImage(heart, canv.width - step, 0, 50, 50)  //drawn in the top right corner of the canvas
         }
@@ -289,7 +187,7 @@ const collision_game = function() { // use a function to hide the identifiers us
     function start_game() {
         listenForKeyPress()
 
-        playerSprite = new Sprite(0, 0, 27, 27, '#000000', 'frontend/images/plane-right.png');
+        playerSprite = new Sprite(0, 0, 27, 27, '#000000', 'frontend/images/plane-right.png', ctx);
 
         for (let i = 0; i < 5; i++) {
             let x = Math.random() * canv.width; // Random x position
@@ -299,7 +197,7 @@ const collision_game = function() { // use a function to hide the identifiers us
             let imageSource = 'frontend/images/cloud.png';
 
             // Create an obstacle and push it to the array
-            clouds.push(new Cloud(x, y, width, height, imageSource));
+            clouds.push(new Cloud(x, y, width, height, imageSource, ctx));
         }
 
         game_id = setInterval(game_loop, 50);
@@ -327,4 +225,6 @@ const collision_game = function() { // use a function to hide the identifiers us
         //add end screen here
     }
     welcome()
-}();
+};
+
+game()
