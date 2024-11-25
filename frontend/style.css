@@ -12,8 +12,6 @@ body {
 }
 
 #game_canvas {
-    /* width: 1000px;
-    height: 500px; */
     border: 1px dotted;
     background-color: skyblue;
     display: none;
@@ -26,6 +24,48 @@ body {
     display: none;
 }
 
-#user-form {
+#username_form {
+    display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    text-align: center; /* Aligns text inside the form */
+
+    display: flex;
+    flex-direction: column;
+    gap: 5%;
+}
+
+#userform_label {
+    font-size: 40px;
+}
+
+#userform_input {
+    background-color: black;
+    color: white;
+    font-size: 30px;
+    width: 100%;
+    border-radius: 10px;
+}
+
+#userform_input:focus {
+    outline: 2px solid #FFFFFF; /* Changes the focus border to orange */
+    outline-offset: 2px;
+}
+
+#userform_button {
+    font-size: 25px;
+    background-color: red;
+    color: white;
+    border-radius: 25px;
+    width: auto;
+    height: auto;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+footer {
+    display: flex;
+    flex-direction: column;
 }

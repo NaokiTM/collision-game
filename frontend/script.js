@@ -15,18 +15,18 @@ const collision_game = function() { // use a function to hide the identifiers us
     canv.height = window.innerHeight;
 
     //waits for username form submit button to be clicked, then displays the welcome message and canvas. 
-    startButton.addEventListener("click", (event) => {
+    userform_button.addEventListener("click", (event) => {
         event.preventDefault()  //prevents page scrolling when using arrow keys
         preventDefaultFlag = true;
 
-        const userForm = document.getElementById("user-form")
-        const welcomeTitle = document.getElementById("title")
+        const userForm = document.getElementById("username_form")
+        const footer = document.querySelector("footer")
 
         let playerUsername = userForm.elements["username"].value
         console.log("the players username is: " + playerUsername)
 
         userForm.style.display = "none";
-        welcomeTitle.style.display = "block";
+        footer.style.display = "none"
         canv.style.display = "block";
         console.log("button clicked")
     })
