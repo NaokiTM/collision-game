@@ -275,12 +275,15 @@ const collision_game = function() { // use a function to hide the identifiers us
 
         let gameStarted = false;
 
-        document.addEventListener("keydown", (event) => {
+        const gameStartListener = (event) => {
             if (!gameStarted) {
-                gameStarted = true
-                start_game()
+                gameStarted = true;
+                document.removeEventListener("keydown", gameStartListener); 
+                start_game();
             }
-        });
+        }
+
+        document.addEventListener("keydown", gameStartListener)
     }
 
     function start_game() {
@@ -323,11 +326,5 @@ const collision_game = function() { // use a function to hide the identifiers us
         collisionCount = 0;
         //add end screen here
     }
-
-
-
-
-    // start the game
-    // start_game()
     welcome()
 }();
