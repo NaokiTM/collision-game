@@ -2,7 +2,7 @@ import Sprite from "./constructors/Sprite.js";
 import Cloud from "./constructors/Cloud.js";
 import Parachute from "./constructors/Parachute.js";
 
-function game () { // use a function to hide the identifiers used in the collision gameee
+function game () {
 
     // let's set up a canvas and a canvas context so we can draw stuff
     const canv = document.getElementById("game_canvas");
@@ -13,10 +13,13 @@ function game () { // use a function to hide the identifiers used in the collisi
 
     let clouds = []; // array to hold the things we might collide with
     let parachutes = []
-    let game_id;
+    let gameId;
     let playerSprite;
     let collisionFlag = false;
     let preventDefaultFlag = false;
+
+    let timeStarted
+    let timeEnded
 
     //sets the canvas to take up the entire viewport
     canv.width = window.innerWidth;
@@ -36,7 +39,6 @@ function game () { // use a function to hide the identifiers used in the collisi
             alert("Username cannot be longer than 14 characters")
             userForm.elements["username"].value = "";
         } else {
-
             userForm.style.display = "none";
             footer.style.display = "none"
             canv.style.display = "block";
@@ -56,22 +58,18 @@ function game () { // use a function to hide the identifiers used in the collisi
         }
     }
 
-
-
-
-
     //called when the playerSprite collides into an obstacle:
     function updateCloudCollisionCount() {
         cloudCollisionCount++
         if (cloudCollisionCount == 3) {
-            stop_game("won")
+            stopGame("lost")
         }
     }
 
     function updateParachuteCollisionCount() {
         parachuteCollisionCount++
         if (parachuteCollisionCount == 5) {
-            stop_game("lost")
+            stopGame("won")
         }
     }
 
@@ -203,14 +201,15 @@ function game () { // use a function to hide the identifiers used in the collisi
             if (!gameStarted) {
                 gameStarted = true;
                 document.removeEventListener("keydown", gameStartListener); 
-                start_game();
+                startGame();
             }
         }
 
         document.addEventListener("keydown", gameStartListener)
     }
 
-    function start_game() {
+    function startGame() {
+
         const noOfClouds = 10  //any more than 10 pushes clouds down so no longer visible - fix later
         const noOfParachutes = 5
 
@@ -240,12 +239,14 @@ function game () { // use a function to hide the identifiers used in the collisi
             parachutes.push(new Parachute(x, y, width, height, imageSource, ctx));
         }
 
-        game_id = setInterval(game_loop, 50);
-        return game_id //resets every 50ms
+        timeStarted = Date.now()
+
+        gameId = setInterval(gameLoop, 50);
+        return gameId //resets every 50ms
     }            
 
 
-    function game_loop() {
+    function gameLoop() {
         //clears the canvas before redrawing new position
         ctx.clearRect(0, 0, canv.width, canv.height);
 
@@ -259,19 +260,32 @@ function game () { // use a function to hide the identifiers used in the collisi
     }
 
 
-    function stop_game(wonOrLost) {
+    function stopGame(wonOrLost) {
 
-        clearInterval(game_id)
+        clearInterval(gameId)
         ctx.clearRect(0, 0, canv.width, canv.height);
-        collisionCount = 0;
+        cloudCollisionCount = 0
+        parachuteCollisionCount = 0
         //add end screen here
 
         if (wonOrLost == "won") {
+            timeEnded = Date.now()
+            const timeScore = (timeEnded - timeStarted) / 1000 //in seconds
+            console.log("your time was: " + timeScore)
+
+            timeStarted = 0;
+            timeEnded = 0;
+
             //game won, time is saved
         } else if (wonOrLost == "lost") {
+            console.log("lost??")
+
+            timeStarted = 0;
+            timeEnded = 0;
             //game lost, time is not saved
         }
     }
+
     welcome()
 };
 

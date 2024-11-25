@@ -8,7 +8,7 @@ export default class Cloud {
         this.height = height;
         this.colour = '#FFFFFF';
         this.image = null; 
-        this.movestep = 8;  //speed at which the clouds move across the screen
+        this.movestep = 10;  //speed at which the clouds move across the screen
         this.ctx = ctx
 
         //define bounding area
