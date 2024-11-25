@@ -1,5 +1,6 @@
 import Sprite from "./constructors/Sprite.js";
 import Cloud from "./constructors/Cloud.js";
+import Parachute from "./constructors/Parachute.js";
 
 function game () { // use a function to hide the identifiers used in the collision gameee
 
@@ -32,10 +33,10 @@ function game () { // use a function to hide the identifiers used in the collisi
             alert("Username cannot be longer than 14 characters")
             userForm.elements["username"].value = "";
         } else {
+
             userForm.style.display = "none";
             footer.style.display = "none"
             canv.style.display = "block";
-            console.log("button clicked")
         }   
     })
 
