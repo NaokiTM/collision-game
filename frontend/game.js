@@ -216,10 +216,10 @@ function game () { // use a function to hide the identifiers used in the collisi
         playerSprite = new Sprite(0, 0, 27, 27, '#000000', 'frontend/images/plane-right.png', ctx);
 
         for (let i = 0; i < 5; i++) {
-            let x = Math.random() * canv.width; // Random x position
-            let y = 50 + (i * 100)  //each cloud is placed 100 pixels below another
             let width = 70;
             let height = 70;
+            let x = Math.random() * (canv.width - width); // Random x position
+            let y = 50 + (i * 100)  //each cloud is placed 100 pixels below another
             let imageSource = 'frontend/images/cloud.png';
 
             // Create an obstacle and push it to the array
@@ -227,10 +227,10 @@ function game () { // use a function to hide the identifiers used in the collisi
         }
 
         for (let i = 0; i < 5; i++) {
-            let x = Math.random() * canv.width; // Random x position
-            let y = 50 + (i * 100)  //each cloud is placed 100 pixels below another
             let width = 70;
             let height = 70;
+            let x = Math.random() * (canv.width - width); // Random x position
+            let y = 50 + (i * 100)  //each cloud is placed 100 pixels below another
             let imageSource = 'frontend/images/parachute.png';
 
             // Create an obstacle and push it to the array
