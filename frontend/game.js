@@ -8,8 +8,11 @@ function game () { // use a function to hide the identifiers used in the collisi
     const canv = document.getElementById("game_canvas");
     const ctx = canv.getContext("2d");
 
-    let collisionCount = 0; // holds the number of collisions so far
+    let cloudCollisionCount = 0; // holds the number of collisions so far
+    let parachuteCollisionCount = 0;
+
     let clouds = []; // array to hold the things we might collide with
+    let parachutes = []
     let game_id;
     let playerSprite;
     let collisionFlag = false;
@@ -58,14 +61,21 @@ function game () { // use a function to hide the identifiers used in the collisi
 
 
     //called when the playerSprite collides into an obstacle:
-    function updateCollisionCount() {
-        collisionCount++
-        if (collisionCount == 3) {
-            stop_game()
+    function updateCloudCollisionCount() {
+        cloudCollisionCount++
+        if (cloudCollisionCount == 3) {
+            stop_game("won")
         }
     }
 
-    function checkForCollisions() {
+    function updateParachuteCollisionCount() {
+        parachuteCollisionCount++
+        if (parachuteCollisionCount == 5) {
+            stop_game("lost")
+        }
+    }
+
+    function checkForCloudCollisions() {
         //updates position of clouds, then updates each ones boundaries, then draws the clouds in their new position
         for (let i = 0; i < clouds.length; i++) {
             clouds[i].move(canv.width);
@@ -76,7 +86,7 @@ function game () { // use a function to hide the identifiers used in the collisi
         if (collisionFlag == false) {  //player is no longer intersecting with the obstacle
             for (let j = 0; j < clouds.length; j++) {
                 if (intersects(playerSprite, clouds[j])) {
-                    updateCollisionCount()
+                    updateCloudCollisionCount()
                     collisionFlag == true
                     break;
                 }
@@ -97,8 +107,23 @@ function game () { // use a function to hide the identifiers used in the collisi
         }
     }
 
+    function checkForParachuteCollisions() {
+        for (let i = 0; i < parachutes.length; i++) {
+            parachutes[i].move(canv.width);
+            parachutes[i].updateBounds()
+            parachutes[i].draw(ctx);
+        }
+
+        for (let j = 0; j < parachutes.length; j++) {
+            if (intersects(playerSprite, parachutes[j])) {
+                updateParachuteCollisionCount()
+                parachutes.splice(j, 1)  //removes the collided item, signifying the player has collected it
+            }
+        }
+    }
+
     function drawHeartsLeft() {
-        let livesLeft = 3 - collisionCount
+        let livesLeft = 3 - cloudCollisionCount
         ctx.save()
 
         const heart = new Image()
@@ -201,6 +226,17 @@ function game () { // use a function to hide the identifiers used in the collisi
             clouds.push(new Cloud(x, y, width, height, imageSource, ctx));
         }
 
+        for (let i = 0; i < 5; i++) {
+            let x = Math.random() * canv.width; // Random x position
+            let y = 50 + (i * 100)  //each cloud is placed 100 pixels below another
+            let width = 70;
+            let height = 70;
+            let imageSource = 'frontend/images/parachute.png';
+
+            // Create an obstacle and push it to the array
+            parachutes.push(new Parachute(x, y, width, height, imageSource, ctx));
+        }
+
         game_id = setInterval(game_loop, 50);
         return game_id //resets every 50ms
     }            
@@ -214,16 +250,24 @@ function game () { // use a function to hide the identifiers used in the collisi
         playerSprite.updateBounds()
         playerSprite.draw(ctx); 
 
-        checkForCollisions()
+        checkForCloudCollisions()
+        checkForParachuteCollisions()
         drawHeartsLeft()
     }
 
 
-    function stop_game() {
+    function stop_game(wonOrLost) {
+
         clearInterval(game_id)
         ctx.clearRect(0, 0, canv.width, canv.height);
         collisionCount = 0;
         //add end screen here
+
+        if (wonOrLost == "won") {
+            //game won, time is saved
+        } else if (wonOrLost == "lost") {
+            //game lost, time is not saved
+        }
     }
     welcome()
 };
