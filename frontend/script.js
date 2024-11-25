@@ -23,12 +23,17 @@ const collision_game = function() { // use a function to hide the identifiers us
         const footer = document.querySelector("footer")
 
         let playerUsername = userForm.elements["username"].value
-        console.log("the players username is: " + playerUsername)
-
-        userForm.style.display = "none";
-        footer.style.display = "none"
-        canv.style.display = "block";
-        console.log("button clicked")
+    
+        if (playerUsername.length > 14) {
+            alert("Username cannot be longer than 14 characters")
+            userForm.elements["username"].value = "";
+        } else {
+            usernameCorrectFormat = true;
+            userForm.style.display = "none";
+            footer.style.display = "none"
+            canv.style.display = "block";
+            console.log("button clicked")
+        }   
     })
 
     // a constructor for a box class 
@@ -253,6 +258,8 @@ const collision_game = function() { // use a function to hide the identifiers us
 
 
     function start_game() {
+        
+        
         listenForKeyPress()
 
         playerSprite = new Sprite(0, 0, 27, 27, '#000000', 'frontend/images/plane-right.png');
