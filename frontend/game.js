@@ -185,7 +185,24 @@ function game () {
                 break;
         }
     }
-    
+
+
+
+
+
+
+    function backToMenuListener(event) {
+        const userForm = document.getElementById("username_form")
+        const footer = document.querySelector("footer")
+
+        userForm.style.display = "flex";
+        footer.style.display = "flex"
+        canv.style.display = "none";
+    }
+
+
+
+
 
     function welcome() {
         //removing the listener for moving from the menu to the welcome screen
@@ -220,9 +237,14 @@ function game () {
         document.addEventListener("keydown", gameStartListener)
     }
 
+
+
+
+
+
+
+
     function startGame() {
-
-
         const noOfClouds = 10  //any more than 10 pushes clouds down so no longer visible - fix later
         const noOfParachutes = 5
 
@@ -318,8 +340,8 @@ function game () {
 
         ctx.font = "30px Arial";
         ctx.fillText("Press any key to go back to menu and review leaderboards",  canv.width / 2, (canv.height / 3) + 160)
-
-
+        
+        document.addEventListener('keydown', backToMenuListener)
     }
 };
 
