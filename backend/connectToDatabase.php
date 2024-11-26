@@ -1,7 +1,6 @@
 <?php
-
-//import the variables from db_secrets (change to match db_secrets on your own machine)
-require '/home/naoki/Documents/db_secrets.php';
+$pathToSecrets = getenv('DB_SECRETS_PATH');
+require $pathToSecrets;
 
 function connectToDatabase() {
 
