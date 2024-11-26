@@ -30,6 +30,20 @@ function game () {
     const leaderboard = document.getElementById("leaderboardContainer")
     const userForm = document.getElementById("userForm")
 
+    function resetVariables() {
+        cloudCollisionCount = 0;
+        parachuteCollisionCount = 0;
+        clouds = [];
+        parachutes = [];
+        gameId = null;
+        playerSprite = new Sprite(0, 0, 27, 27, '#000000', 'frontend/images/plane-right.png', ctx);
+        collisionFlag = false;
+        preventDefaultFlag = false;
+        gameEnded = false;
+        timeStarted = 0;
+        timeEnded = 0;
+    }
+
     //waits for username form submit button to be clicked, then displays the welcome message and canvas. 
     function userFormButtonListener(event) {
         event.preventDefault()  //prevents page scrolling when using arrow keys
@@ -78,6 +92,7 @@ function game () {
     }
 
     function updateParachuteCollisionCount() {
+
         if (!gameEnded) {
             parachuteCollisionCount++
             if (parachuteCollisionCount == 5) {
@@ -194,6 +209,7 @@ function game () {
 
 
     function backToMenuListener(event) {
+        document.removeEventListener('keydown', backToMenuListener)
 
         const userForm = document.getElementById("userForm")
         const footer = document.querySelector("footer")
@@ -209,8 +225,17 @@ function game () {
 
 
     function welcome() {
+
+        ctx.clearRect(0, 0, canv.width, canv.height);
+
+        //removing the listener to go back to the menu when a key is pressed
+        document.removeEventListener('keydown', backToMenuListener)
+
+
         //removing the listener for moving from the menu to the welcome screen
         userForm.removeEventListener('click', userFormButtonListener)
+
+
 
         //welcome screen here
         ctx.font = "50px Arial";
@@ -233,6 +258,7 @@ function game () {
         function gameStartListener() {
             if (!gameStarted) {
                 gameStarted = true;
+                resetVariables()
                 document.removeEventListener("keydown", gameStartListener); 
                 startGame();
             }
