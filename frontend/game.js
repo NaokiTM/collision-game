@@ -26,8 +26,10 @@ function game () {
     canv.width = window.innerWidth;
     canv.height = window.innerHeight;
 
+    const usernameForm = document.getElementById("userform_button")
+
     //waits for username form submit button to be clicked, then displays the welcome message and canvas. 
-    userform_button.addEventListener("click", (event) => {
+    function userFormButtonListener(event) {
         event.preventDefault()  //prevents page scrolling when using arrow keys
         preventDefaultFlag = true;
 
@@ -43,8 +45,12 @@ function game () {
             userForm.style.display = "none";
             footer.style.display = "none"
             canv.style.display = "block";
+
+            welcome()
         }   
-    })
+    }
+
+    usernameForm.addEventListener('click', userFormButtonListener)
 
     //function to determine if 2 objects intersect (player and obstacle in this case)
     function intersects(obj1, obj2) {
@@ -182,6 +188,9 @@ function game () {
     
 
     function welcome() {
+        //removing the listener for moving from the menu to the welcome screen
+        usernameForm.removeEventListener('click', userFormButtonListener)
+
         //welcome screen here
         ctx.font = "50px Arial";
         ctx.textAlign = "center";  //horizontal centering
@@ -212,6 +221,7 @@ function game () {
     }
 
     function startGame() {
+
 
         const noOfClouds = 10  //any more than 10 pushes clouds down so no longer visible - fix later
         const noOfParachutes = 5
@@ -278,7 +288,6 @@ function game () {
         ctx.clearRect(0, 0, canv.width, canv.height);
 
         if (wonOrLost == "won") {
-
             //game won, time is saved
             timeEnded = Date.now()
             const timeScore = (timeEnded - timeStarted) / 1000 //in seconds
@@ -286,15 +295,32 @@ function game () {
 
             timeStarted = 0;
             timeEnded = 0;
-            
+
+            ctx.font = "50px Arial";
+            ctx.textAlign = "center";  //horizontal centering
+            ctx.textBaseline = "middle";  //vertical centering
+            ctx.fillText("You won!", canv.width / 2, canv.height / 4)
+    
+            ctx.font = "30px Arial";
+            ctx.fillText("Your time was " + timeScore,  canv.width / 2, (canv.height / 3) + 50)
+
         } else if (wonOrLost == "lost") {
             //game lost, time not saved
             timeStarted = 0;
             timeEnded = 0;
-        }
-    }
 
-    welcome()
+            ctx.font = "50px Arial";
+            ctx.textAlign = "center";  //horizontal centering
+            ctx.textBaseline = "middle";  //vertical centering
+            ctx.fillText("You lost!", canv.width / 2, canv.height / 4)
+
+        }
+
+        ctx.font = "30px Arial";
+        ctx.fillText("Press any key to go back to menu and review leaderboards",  canv.width / 2, (canv.height / 3) + 160)
+
+
+    }
 };
 
 game()
