@@ -19,8 +19,12 @@ function game () {
     let preventDefaultFlag = false;
     let gameEnded = false;
 
+    //these 2 variables are sent to the database, and once sent are reset.
     let timeStarted
     let timeEnded
+
+    let usernameToStore  
+    let timeToStore;
 
     //sets the canvas to take up the entire viewport
     canv.width = window.innerWidth;
@@ -30,7 +34,49 @@ function game () {
     const leaderboard = document.getElementById("leaderboardContainer")
     const userForm = document.getElementById("userForm")
 
+    function sendScoresToPhp() {
+        let scoreData = {
+            username: usernameToStore,
+            score: timeToStore
+        }
+
+        fetch('../backend/updateServerLeaderboard.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(scoreData)  // Send the data as JSON
+        })
+        .then(response => response.json())
+        .then(scoreData => {
+            addToClientLeaderboard(scoreData);
+        })
+    }
+
+    function addToClientLeaderboard(scoreData) {
+        //defining the element in which we will insert the new row
+        const clientLeaderboardBody = document.querySelector("#leaderboard tbody")
+
+        //creates new row, and 2 cells for the username and score to add to the row
+        const newRow = document.createElement("tr")
+        const usernameCell = document.createElement("td")
+        const scoreCell = document.createElement("td")
+
+        //adds the username and score from the data argument, into each cell.
+        usernameCell.textContext = scoreData.username
+        scoreCell.textContent = scoreData.score
+
+        //adds the updated cells to the new row
+        newRow.appendChild(usernameCell)
+        newRow.appendChild(scoreCell)
+
+        //finally adds the new row to the tbody of the leaderboard in index.html
+        clientLeaderboardBody.appendChild(newRow)
+    }
+
     function resetVariables() {
+        usernameToStore = null;
+        timeToStore = 0;
         cloudCollisionCount = 0;
         parachuteCollisionCount = 0;
         clouds = [];
@@ -51,9 +97,9 @@ function game () {
 
         const footer = document.querySelector("footer")
 
-        let playerUsername = userForm.elements["username"].value
+        usernameToStore = userForm.elements["username"].value
     
-        if (playerUsername.length > 14) {
+        if (usernameToStore.length > 14) {
             alert("Username cannot be longer than 14 characters")
             userForm.elements["username"].value = "";
         } else {
@@ -342,11 +388,8 @@ function game () {
         if (wonOrLost == "won") {
             //game won, time is saved
             timeEnded = Date.now()
-            const timeScore = (timeEnded - timeStarted) / 1000 //in seconds
-            console.log("your time was: " + timeScore)
-
-            timeStarted = 0;
-            timeEnded = 0;
+            timeToStore = (timeEnded - timeStarted) / 1000 //in seconds
+            console.log("your time was: " + timeToStore)
 
             ctx.font = "50px Arial";
             ctx.textAlign = "center";  //horizontal centering
@@ -354,7 +397,9 @@ function game () {
             ctx.fillText("You won!", canv.width / 2, canv.height / 4)
     
             ctx.font = "30px Arial";
-            ctx.fillText("Your time was " + timeScore,  canv.width / 2, (canv.height / 3) + 50)
+            ctx.fillText("Your time was " + timeToStore,  canv.width / 2, (canv.height / 3) + 50)
+
+            sendScoresToPhp()
 
         } else if (wonOrLost == "lost") {
             //game lost, time not saved
