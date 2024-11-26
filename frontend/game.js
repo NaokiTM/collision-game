@@ -5,7 +5,7 @@ import Parachute from "./constructors/Parachute.js";
 function game () {
 
     // let's set up a canvas and a canvas context so we can draw stuff
-    const canv = document.getElementById("game_canvas");
+    const canv = document.getElementById("gameCanvas");
     const ctx = canv.getContext("2d");
 
     let cloudCollisionCount = 0; // holds the number of collisions so far
@@ -26,14 +26,15 @@ function game () {
     canv.width = window.innerWidth;
     canv.height = window.innerHeight;
 
-    const usernameForm = document.getElementById("userform_button")
+    const userFormButton = document.getElementById("userFormButton")
+    const leaderboard = document.getElementById("leaderboardContainer")
+    const userForm = document.getElementById("userForm")
 
     //waits for username form submit button to be clicked, then displays the welcome message and canvas. 
     function userFormButtonListener(event) {
         event.preventDefault()  //prevents page scrolling when using arrow keys
         preventDefaultFlag = true;
 
-        const userForm = document.getElementById("username_form")
         const footer = document.querySelector("footer")
 
         let playerUsername = userForm.elements["username"].value
@@ -42,6 +43,7 @@ function game () {
             alert("Username cannot be longer than 14 characters")
             userForm.elements["username"].value = "";
         } else {
+            leaderboard.style.display = "none"
             userForm.style.display = "none";
             footer.style.display = "none"
             canv.style.display = "block";
@@ -50,7 +52,7 @@ function game () {
         }   
     }
 
-    usernameForm.addEventListener('click', userFormButtonListener)
+    userFormButton.addEventListener('click', userFormButtonListener)
 
     //function to determine if 2 objects intersect (player and obstacle in this case)
     function intersects(obj1, obj2) {
@@ -192,9 +194,11 @@ function game () {
 
 
     function backToMenuListener(event) {
-        const userForm = document.getElementById("username_form")
+
+        const userForm = document.getElementById("userForm")
         const footer = document.querySelector("footer")
 
+        leaderboard.style.display = 'block'
         userForm.style.display = "flex";
         footer.style.display = "flex"
         canv.style.display = "none";
@@ -206,7 +210,7 @@ function game () {
 
     function welcome() {
         //removing the listener for moving from the menu to the welcome screen
-        usernameForm.removeEventListener('click', userFormButtonListener)
+        userForm.removeEventListener('click', userFormButtonListener)
 
         //welcome screen here
         ctx.font = "50px Arial";

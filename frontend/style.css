@@ -1,26 +1,30 @@
+/* * {
+    border: 1px solid red;
+} */
 body {
     background-color: black;
     color: white;
     font-family: sans-serif;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: normal;
 
     /* make game fit the screen */
     margin: 0;
     padding: 0;
 }
 
-footer, #username_form {
+footer, #userForm {
     display: flex;
     flex-direction: column;
 }
 
-#game_canvas, #title {
+#gameCanvas, #title {
     display: none;
 }
 
-#game_canvas {
+#gameCanvas {
     border: 1px dotted;
     background-color: skyblue;
 }
@@ -31,36 +35,37 @@ footer, #username_form {
     line-height: 1;
 }
 
-#username_form {
-    justify-content: center;
+#userForm {
     align-items: center;
     height: 100vh; /* Full viewport height */
     text-align: center; /* Aligns text inside the form */
 
     display: flex;
     flex-direction: column;
-    gap: 5%;
 }
 
-#userform_label {
+#userFormLabel, #leaderboardTitle, #footerTitle {
     font-size: 40px;
+    padding-top: 60px;
+    padding-bottom: 40px;
 }
 
-#userform_input {
+#userFormInput {
     background-color: black;
     color: white;
     font-size: 30px;
     width: 100%;
     border-radius: 10px;
     text-align: center;
+    margin-bottom: 40px;
 }
 
-#userform_input:focus {
+#userFormInput:focus {
     outline: 2px solid #FFFFFF; /* Changes the focus border to orange */
     outline-offset: 2px;
 }
 
-#userform_button {
+#userFormButton {
     color: white;
     font-size: 25px;
     background-color: red;
@@ -69,4 +74,12 @@ footer, #username_form {
     height: auto;
     padding-left: 10%;
     padding-right: 10%;
+    margin-top: 40px;
 }
+
+th, td {
+    border: 1px solid white; /* Adds a 1px solid black border to each cell */
+    padding: 4px; /* Adds some padding for better readability */
+    text-align: left; /* Aligns the text to the left (optional) */
+}
+
