@@ -8,6 +8,10 @@ function game () {
     const canv = document.getElementById("gameCanvas");
     const ctx = canv.getContext("2d");
 
+    const userFormButton = document.getElementById("userFormButton")
+    const leaderboard = document.getElementById("leaderboardContainer")
+    const userForm = document.getElementById("userForm")
+
     let cloudCollisionCount = 0; // holds the number of collisions so far
     let parachuteCollisionCount = 0;
 
@@ -30,16 +34,44 @@ function game () {
     canv.width = window.innerWidth;
     canv.height = window.innerHeight;
 
-    const userFormButton = document.getElementById("userFormButton")
-    const leaderboard = document.getElementById("leaderboardContainer")
-    const userForm = document.getElementById("userForm")
+    // function sendScoresToPhp() {
+    //     let scoreData = {
+    //         username: usernameToStore,
+    //         timeScore: timeToStore
+    //     }
+
+    //     fetch('../backend/updateServerLeaderboard.php', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify(scoreData)  // Send the data as JSON
+    //     })
+    //     .then(response => response.json())
+    //     .then(responseData => {
+    //         if (responseData.success) {
+    //             console.log("Leaderboard updated successfully:", responseData.message);
+    //             addToClientLeaderboard(scoreData);
+    //         } else {
+    //             console.log("Error updating leaderboard:", responseData.message);
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.log("error: " + error)
+    //     })
+    // }
 
     function sendScoresToPhp() {
+        // Prepare the score data object
         let scoreData = {
             username: usernameToStore,
             score: timeToStore
-        }
-
+        };
+    
+        // Log the score data to verify it's correct before sending
+        console.log("Sending the following score data to PHP:", scoreData);
+    
+        // Start the fetch request to send data to PHP
         fetch('../backend/updateServerLeaderboard.php', {
             method: 'POST',
             headers: {
@@ -47,10 +79,43 @@ function game () {
             },
             body: JSON.stringify(scoreData)  // Send the data as JSON
         })
-        .then(response => response.json())
-        .then(scoreData => {
-            addToClientLeaderboard(scoreData);
+        .then(response => {
+            // Check if the response is successful (HTTP status 2xx)
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+            // Log the raw response to debug it
+            console.log("Raw response text:", response);
+    
+            return response.text(); // Temporarily read the response as text for debugging
         })
+        .then(rawText => {
+            // Log the raw text to check if it’s valid JSON
+            console.log("Raw server response (text):", rawText);
+    
+            // Try parsing the raw response as JSON
+            let parsedData;
+            try {
+                parsedData = JSON.parse(rawText);
+                console.log("Parsed JSON Response:", parsedData);
+    
+                // Handle response based on the parsed JSON
+                if (parsedData.success) {
+                    console.log("Leaderboard updated successfully:", parsedData.message);
+                    addToClientLeaderboard(scoreData);  // Add score to the client leaderboard
+                } else {
+                    console.error("Error updating leaderboard:", parsedData.message);
+                }
+            } catch (error) {
+                // Log JSON parsing errors
+                console.error("Error parsing JSON:", error, "Raw response was:", rawText);
+            }
+        })
+        .catch(error => {
+            // Catch and log errors from the fetch operation itself
+            console.error("Fetch error:", error);
+        });
     }
 
     function addToClientLeaderboard(scoreData) {
@@ -75,8 +140,6 @@ function game () {
     }
 
     function resetVariables() {
-        usernameToStore = null;
-        timeToStore = 0;
         cloudCollisionCount = 0;
         parachuteCollisionCount = 0;
         clouds = [];
@@ -102,6 +165,9 @@ function game () {
         if (usernameToStore.length > 14) {
             alert("Username cannot be longer than 14 characters")
             userForm.elements["username"].value = "";
+        } else if (usernameToStore.length <= 0) {
+            alert("username field cannot be empty")
+            userForm.elements["username"].value = "";
         } else {
             leaderboard.style.display = "none"
             userForm.style.display = "none";
@@ -111,8 +177,6 @@ function game () {
             welcome()
         }   
     }
-
-    userFormButton.addEventListener('click', userFormButtonListener)
 
     //function to determine if 2 objects intersect (player and obstacle in this case)
     function intersects(obj1, obj2) {
@@ -375,7 +439,6 @@ function game () {
         gameEnded = true
         clearInterval(gameId)
         gameId = null;
-        ctx.clearRect(0, 0, canv.width, canv.height);
         document.removeEventListener("keydown", listenForKeyPress)
 
         cloudCollisionCount = 0
@@ -389,7 +452,6 @@ function game () {
             //game won, time is saved
             timeEnded = Date.now()
             timeToStore = (timeEnded - timeStarted) / 1000 //in seconds
-            console.log("your time was: " + timeToStore)
 
             ctx.font = "50px Arial";
             ctx.textAlign = "center";  //horizontal centering
@@ -418,6 +480,8 @@ function game () {
         
         document.addEventListener('keydown', backToMenuListener)
     }
+
+    userFormButton.addEventListener('click', userFormButtonListener)
 };
 
 game()
