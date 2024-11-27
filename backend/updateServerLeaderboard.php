@@ -1,4 +1,5 @@
 <?php
+
 //import in connectToDatabase file
 require 'connectToDatabase.php';
 
@@ -7,30 +8,24 @@ $pathToSecrets = getenv('DB_SECRETS_PATH');
 require $pathToSecrets;
 
 function updateServerLeaderboard() {
+    $username = $_GET['username'];
+    $timeToStore = $_GET['timeToStore'];
+
     //establish the connection to the postGreSql database
     $connection = connectToDatabase();
 
-    //decode data object sent from game.js
-    $data = json_decode(file_get_contents("php://input"), true);
+    //creating a query to pass to the database once a connection is established
+    $query = $connection-> prepare("INSERT INTO leaderboard (username, timescore) VALUES (:username, :timescore)");
+    
+    //binding the created query to the GET array values, then executing
+    $query->bindParam(':username', $username);
+    $query->bindParam(':timescore', $timeToStore);
+    $query -> execute();
 
-    //split object into seperate variables
-    $username = $data['username'];
-    $timescore = $data['timescore'];
-
-    //insert them into server side leaderboard table
-    $query = "INSERT INTO leaderboard (username, timescore) VALUES ($1, $2)";
-
-    //execute the insertion query and store its result
-    $result = pg_query_params($connection, $query, array($username, $timescore));
-
-    // Check if the insertion was successful
-    if ($result) {
-        echo json_encode(['success' => true, 'message' => 'Data inserted successfully']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to insert data', 'error' => pg_last_error($connection)]);
-    }
-
-    pg_close($connection);
+    $query = null;
+    $connection = null;
 }
 
+// Call the function
+updateServerLeaderboard();
 ?>

@@ -28,97 +28,19 @@ function game () {
     let timeEnded
 
     let usernameToStore  
-    let timeToStore;
+    let timeToStore
 
     //sets the canvas to take up the entire viewport
     canv.width = window.innerWidth;
     canv.height = window.innerHeight;
 
-    // function sendScoresToPhp() {
-    //     let scoreData = {
-    //         username: usernameToStore,
-    //         timeScore: timeToStore
-    //     }
-
-    //     fetch('../backend/updateServerLeaderboard.php', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(scoreData)  // Send the data as JSON
-    //     })
-    //     .then(response => response.json())
-    //     .then(responseData => {
-    //         if (responseData.success) {
-    //             console.log("Leaderboard updated successfully:", responseData.message);
-    //             addToClientLeaderboard(scoreData);
-    //         } else {
-    //             console.log("Error updating leaderboard:", responseData.message);
-    //         }
-    //     })
-    //     .catch(error => {
-    //         console.log("error: " + error)
-    //     })
-    // }
-
-    function sendScoresToPhp() {
-        // Prepare the score data object
-        let scoreData = {
-            username: usernameToStore,
-            score: timeToStore
-        };
-    
-        // Log the score data to verify it's correct before sending
-        console.log("Sending the following score data to PHP:", scoreData);
-    
-        // Start the fetch request to send data to PHP
-        fetch('../backend/updateServerLeaderboard.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(scoreData)  // Send the data as JSON
-        })
-        .then(response => {
-            // Check if the response is successful (HTTP status 2xx)
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            
-            // Log the raw response to debug it
-            console.log("Raw response text:", response);
-    
-            return response.text(); // Temporarily read the response as text for debugging
-        })
-        .then(rawText => {
-            // Log the raw text to check if it’s valid JSON
-            console.log("Raw server response (text):", rawText);
-    
-            // Try parsing the raw response as JSON
-            let parsedData;
-            try {
-                parsedData = JSON.parse(rawText);
-                console.log("Parsed JSON Response:", parsedData);
-    
-                // Handle response based on the parsed JSON
-                if (parsedData.success) {
-                    console.log("Leaderboard updated successfully:", parsedData.message);
-                    addToClientLeaderboard(scoreData);  // Add score to the client leaderboard
-                } else {
-                    console.error("Error updating leaderboard:", parsedData.message);
-                }
-            } catch (error) {
-                // Log JSON parsing errors
-                console.error("Error parsing JSON:", error, "Raw response was:", rawText);
-            }
-        })
-        .catch(error => {
-            // Catch and log errors from the fetch operation itself
-            console.error("Fetch error:", error);
-        });
+    async function sendScoresToServer() {
+        const response = await fetch(`../backend/updateServerLeaderboard.php?username=${encodeURIComponent(usernameToStore)}&timeToStore=${encodeURIComponent(timeToStore)}`)
+        return response
     }
 
-    function addToClientLeaderboard(scoreData) {
+    function addToClientLeaderboard() {
+
         //defining the element in which we will insert the new row
         const clientLeaderboardBody = document.querySelector("#leaderboard tbody")
 
@@ -128,8 +50,8 @@ function game () {
         const scoreCell = document.createElement("td")
 
         //adds the username and score from the data argument, into each cell.
-        usernameCell.textContext = scoreData.username
-        scoreCell.textContent = scoreData.score
+        usernameCell.textContent = usernameToStore
+        scoreCell.textContent = timeToStore
 
         //adds the updated cells to the new row
         newRow.appendChild(usernameCell)
@@ -461,7 +383,8 @@ function game () {
             ctx.font = "30px Arial";
             ctx.fillText("Your time was " + timeToStore,  canv.width / 2, (canv.height / 3) + 50)
 
-            sendScoresToPhp()
+            sendScoresToServer()
+            addToClientLeaderboard()
 
         } else if (wonOrLost == "lost") {
             //game lost, time not saved

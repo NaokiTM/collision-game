@@ -8,12 +8,12 @@ function createLeaderboardTable($connection) {
     )";
 
     // Execute the query
-    $response = pg_query($connection, $query);
 
-    if ($response) {
+    try {
+        $connection->exec($query);
         echo "Table created successfully\n";
-    } else {
-        echo "Table creation failed: " . pg_last_error($connection) . "\n";
+    } catch(PDOException $e) {
+        echo "Table creation failed: " . $e->getMessage() . "\n";
     }
 }
 ?>
