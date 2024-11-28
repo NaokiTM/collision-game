@@ -9,8 +9,8 @@ function connectToDatabase() {
     try {
         return new PDO($data_source_name, DB_USER, DB_PASSWORD);
     } catch (PDOException $e) {
-        echo "couldn't get a handle on the database!".$e."\n";
-        return NULL;
+        echo json_encode(['success' => false, 'message' => 'Database connection error: ' . $e->getMessage()]);
+        return null;
     }
 }
 

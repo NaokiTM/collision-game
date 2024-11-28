@@ -11,9 +11,8 @@ function createLeaderboardTable($connection) {
 
     try {
         $connection->exec($query);
-        echo "Table created successfully\n";
     } catch(PDOException $e) {
-        echo "Table creation failed: " . $e->getMessage() . "\n";
+        error_log("Error updating leaderboard: " . $e->getMessage());
     }
 }
 ?>
