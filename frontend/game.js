@@ -270,19 +270,19 @@ function game () {
 
 
         //welcome screen here
-        ctx.font = "50px Arial";
+        ctx.font = '50px "Jaro", sans-serif';
         ctx.textAlign = "center";  //horizontal centering
         ctx.textBaseline = "middle";  //vertical centering
         ctx.fillText("Welcome to my flying game!", canv.width / 2, canv.height / 4)
 
-        ctx.font = "30px Arial";
+        ctx.font = '30px "Jaro", sans-serif';
         ctx.fillText("Your objective is to avoid cloud obstacles,",  canv.width / 2, (canv.height / 3) + 50)
         ctx.fillText("and pick up all available collectibles",  canv.width / 2, (canv.height / 3) + 80)
         ctx.fillText("in the shortest amount of time possible", canv.width / 2, (canv.height / 3) + 110)
         ctx.fillText("Use arrow keys to move around",  canv.width / 2, (canv.height / 3) + 160)
 
 
-        ctx.font = "40px Arial"
+        ctx.font = '40px "Jaro", sans-serif';
         ctx.fillText("press any key to start!",  canv.width / 2, (canv.height * 2 / 3))
 
         let gameStarted = false;
@@ -375,12 +375,12 @@ function game () {
             timeEnded = Date.now()
             timeToStore = (timeEnded - timeStarted) / 1000 //in seconds
 
-            ctx.font = "50px Arial";
+            ctx.font = '50px "Jaro", sans-serif';
             ctx.textAlign = "center";  //horizontal centering
             ctx.textBaseline = "middle";  //vertical centering
             ctx.fillText("You won!", canv.width / 2, canv.height / 4)
     
-            ctx.font = "30px Arial";
+            ctx.font = '30px "Jaro", sans-serif';
             ctx.fillText("Your time was " + timeToStore,  canv.width / 2, (canv.height / 3) + 50)
 
             sendScoresToServer()
@@ -391,14 +391,14 @@ function game () {
             timeStarted = 0;
             timeEnded = 0;
 
-            ctx.font = "50px Arial";
+            ctx.font = '50px "Jaro", sans-serif';
             ctx.textAlign = "center";  //horizontal centering
             ctx.textBaseline = "middle";  //vertical centering
             ctx.fillText("You lost!", canv.width / 2, canv.height / 4)
 
         }
 
-        ctx.font = "30px Arial";
+        ctx.font = '30px "Jaro", sans-serif';
         ctx.fillText("Press any key to go back to menu and review leaderboards",  canv.width / 2, (canv.height / 3) + 160)
         
         document.addEventListener('keydown', backToMenuListener)
