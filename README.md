@@ -2,7 +2,8 @@
 
 ## Online deployment:
 
-
+- I have published the game at the following URL (This is from a public repo - check whether hosting from a public repo before submission deadline is allowed)
+- https://naokitm.github.io/collision-game/
 
 ## Overview:
 
