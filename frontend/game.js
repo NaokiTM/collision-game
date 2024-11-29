@@ -3,9 +3,9 @@ import Cloud from "./constructors/Cloud.js";
 import Parachute from "./constructors/Parachute.js";
 
 function game () {
-
     const canv = document.getElementById("gameCanvas");
     const ctx = canv.getContext("2d");
+
     //sets the canvas to take up the entire viewport
     canv.width = window.innerWidth;
     canv.height = window.innerHeight;
@@ -32,7 +32,6 @@ function game () {
     let usernameToStore  
     let timeToStore
 
-
     function resetVariables() {  //resets all the variables at the end of the game
         cloudCollisionCount = 0;
         parachuteCollisionCount = 0;
@@ -51,7 +50,6 @@ function game () {
     function userFormButtonListener(event) {
         event.preventDefault()  //prevents page scrolling when using arrow keys
         preventDefaultFlag = true;
-
         usernameToStore = userForm.elements["username"].value  
     
         //checks if username meets length requirements
@@ -111,6 +109,7 @@ function game () {
         }
     }
 
+    //resets game variables, and runs the startGame() function
     function gameStartListener() {
         if (!gameStarted) {
             gameStarted = true;
@@ -120,10 +119,8 @@ function game () {
         }
     }
 
-    function backToMenuListener(event) {
+    function backToMenuListener() {
         document.removeEventListener('keydown', backToMenuListener)
-        // const userForm = document.getElementById("userForm")
-        // const footer = document.querySelector("footer")
 
         //hides canvas and displays leaderboard, form and footer elements again
         leaderboard.style.display = 'block'
@@ -131,9 +128,6 @@ function game () {
         footer.style.display = "flex"
         canv.style.display = "none";
     }
-
-
-
 
     async function sendScoresToServer() {
         const response = await fetch(`../backend/updateServerLeaderboard.php?username=${encodeURIComponent(usernameToStore)}&timeToStore=${encodeURIComponent(timeToStore)}`)
