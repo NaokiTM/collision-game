@@ -7,7 +7,7 @@ This is a game where the player controls an aeroplane sprite, and must avoid run
 ## Online deployment:
 
 - I have published the game at the following URL (This is from a public repo - check whether hosting from a public repo before submission deadline is allowed)
-- https://naokitm.github.io/collision-game/
+- [Game Demo](https://collision-game-iota.vercel.app/)
 
 ## Software requirements:
 
