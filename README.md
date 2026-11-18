@@ -1,5 +1,7 @@
 # Air rescue game
 
+#SIDE NOTE: there is a bug where moving into a second round of the game, you will not be able to get past the menu no matter what key you press. The temporary workaround is to simply refresh the page. This may be fixed at a later date, but this isn't guaranteed. 
+
 ## Overview:
 
 This is a game where the player controls an aeroplane sprite, and must avoid running into too many clouds, whilst collecting all parachutes (passengers that fell out of the plane) The scoring of the game is determined by how fast the player can collect all collectable items. If the player runs into more than 3 clouds, then the game is over and there is no score returned. 
