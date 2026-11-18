@@ -6,6 +6,9 @@
 
 This is a game where the player controls an aeroplane sprite, and must avoid running into too many clouds, whilst collecting all parachutes (passengers that fell out of the plane) The scoring of the game is determined by how fast the player can collect all collectable items. If the player runs into more than 3 clouds, then the game is over and there is no score returned. 
 
+![Menu Interface](screenshots/menu.png)
+![Game Interface](screenshots/game.png)
+
 ## Online deployment:
 
 - I have published the game at the following URL, hosted using vercel (This is from a public repo - check whether hosting from a public repo before submission deadline is allowed).
